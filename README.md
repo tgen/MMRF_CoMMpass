@@ -1,3 +1,4 @@
+![MMRF Logo](/logos/MMRF_Square_Tag_3c_SM.jpeg)
 # MMRF CoMMpass Study
 ****
 ### What is the MMRF CoMMpass Study?
@@ -8,20 +9,17 @@ The MMRF CoMMpass Study is an observational clinical trial (NCT01454297) of newl
 
 Data generated from the MMRF CoMMpass Study is released in a staged manner every six months as part of planned interim releases.
 
-A. Interim Release Date
+1. Interim Release Date
   1. Data is released to the PCC Sponsors (Amgen, BMS, Janssen, Takeda)
-
-B. Six Months Later (Next Interim Release)
+2. Six Months Later (Next Interim Release)
   1. Data is released to the contributing clinical sites
-
-C. One Year Later (Two Interim Releases Later)
+3. One Year Later (Two Interim Releases Later)
   1. Data is released to the general public
 
 ### How can you access the data?
 
-A) https://research.themmrf.org/
-
-B) dbGAP
+1. https://research.themmrf.org/
+2. dbGAP
   1. Accession Number - PHS000748
 
 ## Information About This Repository
