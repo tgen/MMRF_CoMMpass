@@ -9,18 +9,18 @@ The MMRF CoMMpass Study is an observational clinical trial (NCT01454297) of newl
 
 Data generated from the MMRF CoMMpass Study is released in a staged manner every six months as part of planned interim releases.
 
-1. Interim Release Date
-  1. Data is released to the PCC Sponsors (Amgen, BMS, Janssen, Takeda)
+1. Interim Release Date (Month 0)
+    1. Data is released to the PCC Sponsors (Amgen, BMS, Janssen, Takeda)
 2. Six Months Later (Next Interim Release)
-  1. Data is released to the contributing clinical sites
-3. One Year Later (Two Interim Releases Later)
-  1. Data is released to the general public
+    1. Data is released to the contributing clinical sites
+3. Twelve Months Later (Two Interim Releases Later)
+    1. Data is released to the general public
 
 ### How can you access the data?
 
 1. https://research.themmrf.org/
 2. dbGAP
-  1. Accession Number - PHS000748
+    1. Accession Number - PHS000748
 
 ---
 
@@ -28,3 +28,11 @@ Data generated from the MMRF CoMMpass Study is released in a staged manner every
 
 The molecular characterization and primary analysis of each patient is performed at the Translational Genomics Research Institute (TGen, an affiliate of City of Hope).  In an attempt to ensure the international community interested in Multiple Myeloma can maximally leverage the dataset we are making essential methods and toolsrelated to the analysis performed at TGen available throught this public repository.
 
+---
+### Section Comments
+
+##### Analysis Configuration
+This folder contains scripts and template files needed to recreate the exact reference genome and transcript models (GTF) used for the analysis at TGen
+
+##### Images
+This folder contains a series of random image files rendered on this github website
