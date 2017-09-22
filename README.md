@@ -40,5 +40,7 @@ This folder contains scripts and template files needed to recreate the exact ref
 This folder contains a series of random image files rendered on this github website
 
 ###### Expected IgH Pattern
-
+testing
 ![IgH1](https://github.com/tgen/MMRF_CoMMpass/tree/master/myeloma_purityCalculator_RNAseq/images/Expected_Good_Myeloma_IgH.png)
+testing2
+![CoMMpass Map2](/images/CoMMpass_Map_and_Design.jpg)
