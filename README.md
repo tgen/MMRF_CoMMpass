@@ -30,6 +30,7 @@ Data generated from the MMRF CoMMpass Study is released in a staged manner every
 The molecular characterization and primary analysis of each patient is performed at the Translational Genomics Research Institute (TGen, an affiliate of City of Hope).  In an attempt to ensure the international community interested in Multiple Myeloma can maximally leverage the dataset we are making essential methods and tools related to the analysis performed at TGen available throught this public repository.
 
 ---
+
 ### Section Comments
 
 ##### Analysis Configuration
@@ -37,3 +38,7 @@ This folder contains scripts and template files needed to recreate the exact ref
 
 ##### Images
 This folder contains a series of random image files rendered on this github website
+
+###### Expected IgH Pattern
+
+![IgH1](https://github.com/tgen/MMRF_CoMMpass/tree/master/myeloma_purityCalculator_RNAseq/images/Expected_Good_Myeloma_IgH.png)
