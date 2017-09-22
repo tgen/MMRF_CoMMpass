@@ -3,17 +3,17 @@
 
 This is designed to determine if an RNAseq result bam file contains a pure monoclonal B cell population
 
-###REQUIREMENTS
+### REQUIREMENTS
 
-1. samtools
-2. featurecounts (subread package)
-3. R
-  a. ggplot2
-  b. psych (for geometric mean calculation)
-4. Base Unix commands
-  a. awk
-  b. grep
-  c. sort
+* samtools
+* featurecounts (subread package)
+* R
+  * ggplot2
+  * psych (for geometric mean calculation)
+* Base Unix commands
+  * awk
+  * grep
+  * sort
 
 
 ### Concept
@@ -22,10 +22,10 @@ We expect that a pure myeloma cell population should have a monoclonal expressio
 
 
 ###### Expected IgH Pattern
-![Expected IgH Pattern](/images/Expected_Good_Myeloma_IgH.png)
+![IgH1](/images/Expected_Good_Myeloma_IgH.png)
 
 ###### Expected IgL Pattern
-![Expected IgL Pattern](/images/Expected_Good_Myeloma_IgL.png)
+![IgL1](/images/Expected_Good_Myeloma_IgL.png)
 
 ### Notes
 
