@@ -24,6 +24,9 @@ We expect that a pure myeloma cell population should have a monoclonal expressio
 ###### Expected IgH Pattern
 ![IgH1](https://github.com/tgen/MMRF_CoMMpass/tree/master/myeloma_purityCalculator_RNAseq/images/Expected_Good_Myeloma_IgH.png)
 
+testing
+![IgH Test](/myeloma_purityCalculator_RNAseq/images/Typical_IgH.jpg)
+
 ###### Expected IgL Pattern
 ![IgL1](/images/Expected_Good_Myeloma_IgL.png)
 
