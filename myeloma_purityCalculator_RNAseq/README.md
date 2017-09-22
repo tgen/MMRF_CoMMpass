@@ -18,14 +18,14 @@ This is designed to determine if an RNAseq result bam file contains a pure monoc
 
 ### Concept
 
-We expect that a pure myeloma cell population should have a monoclonal expression of a single heavy and light chain molecule. We assume the unique heavy chain variable and constant gene segments will represent the vast majority of all RNAseq reads aligned to the IgH locus and similarly as single light chain variable element and constant region will represent the majority of the light chain alignments.  We expect that a heavy chain and light chain expressing patient will have single IgH VH and CH high frequency alleles and single high frequencyVK or VL and CK or CL alleles as shown.
+We expect that a pure myeloma cell population should have a monoclonal expression of a single heavy and light chain molecule. We assume the unique heavy chain variable and constant gene segments will represent the vast majority of all RNAseq reads aligned to the IgH locus and similarly as single light chain variable element and constant region will represent the majority of the light chain alignments.  We expect that a heavy chain and light chain expressing patient will have single IgH VH and CH high frequency alleles and single high frequency VK or VL and CK or CL alleles as shown.
 
 
-###### Expected Patterns
-IgH Locus
-![IgH Locus](/myeloma_purityCalculator_RNAseq/images/Typical_IgH.jpg)
+#### Expected Patterns from a High Purity anti-CD138 Sort from a Multiple Myeloma Patient
+IgH locus showing most IGH variable aligned reads on a single VH segment and most IGH constant aligned reads on a single IgH constant gene
+![IgH Locus](/myeloma_purityCalculator_RNAseq/images/Expected_Good_Myeloma_IgH.png)
 
-IgL Loci
+IgL loci showing most IgK or IgL variable aligned reads on a single VK or VL segment and most IgK or IgL constant aligned reads on a single IgL constant gene
 ![IgL Loci](/myeloma_purityCalculator_RNAseq/images/Expected_Good_Myeloma_IgL.png)
 
 ### Notes
