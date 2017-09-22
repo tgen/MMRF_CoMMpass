@@ -58,7 +58,7 @@ IgH locus showing a poly-clonal representation with most IgH variable and consta
 ![IgH Locus](/myeloma_purityCalculator_RNAseq/images/Low_Purity_Myeloma_IgH.png)
 
 IgL loci showing a poly-clonal represenation and the near-normal expectation of 66.6% kappa and 33.3% lambda
-![IgL Loci](/myeloma_purityCalculator_RNAseq/images/Low_Purity_Good_Myeloma_IgL.png)
+![IgL Loci](/myeloma_purityCalculator_RNAseq/images/Low_Purity_Myeloma_IgL.png)
 
 ### Notes
 
