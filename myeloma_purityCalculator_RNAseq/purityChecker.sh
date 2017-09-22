@@ -1,15 +1,18 @@
-#!/bin/sh
-#PBS -l nodes=1:ppn=16
-#PBS -N PurityChecker
-#PBS -l walltime=12:00:00
-#PBS -m abe
-#PBS -j oe
+#######################################################################
+#######################################################################
+## RNAseq based Myeloma Purity Calculator
+##
+## Copyright (c) 2017 Translational Genomics Research Institute
+##
+## This software may be modified and distributed under the terms
+## of the MIT license.  See the LICENSE file for details.
+##
+## Major Contributors: Jonathan J. Keats 
+## Minor Contributors:
+#######################################################################
+#######################################################################
 
-#cd $PBS_O_WORKDIR
 
-##########################################################################################
-## The Text Above is a PBS Header for the TGen compute job queing system		##
-## Remove the "#PBS" and "cd $PBS_O_WORKDIR" lines if running as a standalone system    ##
 
 ##############################
 ##

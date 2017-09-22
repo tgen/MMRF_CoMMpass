@@ -1,5 +1,20 @@
 #!/bin/sh
 
+#######################################################################
+#######################################################################
+## RNAseq based Myeloma Purity Calculator
+##
+## Copyright (c) 2017 Translational Genomics Research Institute
+##
+## This software may be modified and distributed under the terms
+## of the MIT license.  See the LICENSE file for details.
+##
+## Major Contributors: Jonathan J. Keats 
+## Minor Contributors:
+#######################################################################
+#######################################################################
+
+
 PURITY_CHECK_SCRIPT=/home/jkeats/toolkit_jkeats/myelomaPurityChecker/purityChecker.sh
 START_DIR=`pwd`
 

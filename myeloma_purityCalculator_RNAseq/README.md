@@ -1,15 +1,37 @@
+# RNAseq Based Myeloma Purity Calculator
+----
+
 This is designed to determine if an RNAseq result bam file contains a pure monoclonal B cell population
 
-REQUIREMENTS
+###REQUIREMENTS
 
-1) samtools
-2) featurecounts (subread package)
-3) R
-4) ggplot2 library in R
+1. samtools
+2. featurecounts (subread package)
+3. R
+  a. ggplot2
+  b. psych (for geometric mean calculation)
+4. Base Unix commands
+  a. awk
+  b. grep
+  c. sort
+
+
+### Concept
+
+We expect that a pure myeloma cell population should have a monoclonal expression of a single heavy and light chain molecule. We assume the unique heavy chain variable and constant gene segments will represent the vast majority of all RNAseq reads aligned to the IgH locus and similarly as single light chain variable element and constant region will represent the majority of the light chain alignments.  We expect that a heavy chain and light chain expressing patient will have single IgH VH and CH high frequency alleles and single high frequencyVK or VL and CK or CL alleles as shown.
+
+
+###### Expected IgH Pattern
+![Expected IgH Pattern](/images/Expected_Good_Myeloma_IgH.png)
+
+###### Expected IgL Pattern
+![Expected IgL Pattern](/images/Expected_Good_Myeloma_IgL.png)
+
+### Notes
 
 All other required files for GRCh37 are provided but you can build the required annotation files by changing the BUILD_FILES flag to "YES"
 
-Currently, the application will process all .bam files in a folder from which the script is called
+Currently, the script will process all .bam files in a folder from which the script is called
 
 This script will process a bam file approximately every 5 minutes
 
@@ -24,5 +46,3 @@ R
 > ggsave("PurityCheckerV2.png")
 > q()
 
-
-TEST
