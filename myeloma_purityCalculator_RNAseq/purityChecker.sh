@@ -54,6 +54,10 @@ RESULTS_TABLE=/MMRF/purityChecker.txt
 # Set the build directory, this makes it more dynamic
 BUILD_DIR=/home/jkeats/toolkit_jkeats/myelomaPurityChecker/
 
+# Set the path to the immunoglobulin loci GTF for the respective genome version
+IG_LOCI_REGIONS=${BUILD_DIR}Immunoglobulin_GRCh37_Loci.gtf
+#IG_LOCI_REGIONS=${BUILD_DIR}Immunoglobulin_GRCh38_Loci.gtf
+
 # The geometric mean is calculated from the RPKM of the non-B cell contamination genes
 CALCULATE_GEOMEAN_R=${BUILD_DIR}calculate_geomean.R
 
@@ -102,7 +106,7 @@ then
 	grep "IG_" ${GTF} | grep -w "exon" | grep -v "pseudogene" | grep "IG_V_gene" | awk '{OFS="\t" ; if($1==22) print $0}' >> Immunoglobulin_Regions.gtf
 	grep -w "exon" ${GTF}  | grep -v "pseudogene" | grep -f ${NON_BCELL_CONTAMINATION_GENELIST} > Non_Bcell_Contamination_GeneList.gtf
 	## Merge the provided Loci list with the calculated list of Ig elements, update the kappa elements from the inversed segment "D" so they will merge automatically
-	cat Immunoglobulin_GRCh37_Loci.gtf Immunoglobulin_Regions.gtf Non_Bcell_Contamination_GeneList.gtf | sed 's/IGKV1D-12/IGKV1-12/g' | sed 's/IGKV1D-16/IGKV1-16/g' | sed 's/IGKV1D-17/IGKV1-17/g' | sed 's/IGKV1D-33/IGKV1-33/g' | sed 's/IGKV1D-37/IGKV1-37/g' | sed 's/IGKV1D-39/IGKV1-39/g' | sed 's/IGKV1D-8/IGKV1-8/g' | sed 's/IGKV2D-24/IGKV2-24/g' | sed 's/IGKV2D-28/IGKV2-28/g' | sed 's/IGKV2D-30/IGKV2-30/g' | sed 's/IGKV2D-40/IGKV2-40/g' | sed 's/IGKV3D-11/IGKV3-11/g' | sed 's/IGKV3D-15/IGKV3-15/g' | sed 's/IGKV3D-20/IGKV3-20/g' | sed 's/IGKV3D-7/IGKV3-7/g' | sed 's/IGKV6D-21/IGKV6-21/g' > Immunoglobulin_RegionsToCount.gtf
+	cat ${IG_LOCI_REGIONS} Immunoglobulin_Regions.gtf Non_Bcell_Contamination_GeneList.gtf | sed 's/IGKV1D-12/IGKV1-12/g' | sed 's/IGKV1D-16/IGKV1-16/g' | sed 's/IGKV1D-17/IGKV1-17/g' | sed 's/IGKV1D-33/IGKV1-33/g' | sed 's/IGKV1D-37/IGKV1-37/g' | sed 's/IGKV1D-39/IGKV1-39/g' | sed 's/IGKV1D-8/IGKV1-8/g' | sed 's/IGKV2D-24/IGKV2-24/g' | sed 's/IGKV2D-28/IGKV2-28/g' | sed 's/IGKV2D-30/IGKV2-30/g' | sed 's/IGKV2D-40/IGKV2-40/g' | sed 's/IGKV3D-11/IGKV3-11/g' | sed 's/IGKV3D-15/IGKV3-15/g' | sed 's/IGKV3D-20/IGKV3-20/g' | sed 's/IGKV3D-7/IGKV3-7/g' | sed 's/IGKV6D-21/IGKV6-21/g' > Immunoglobulin_RegionsToCount.gtf
 	rm Immunoglobulin_Regions.gtf
 	rm Non_Bcell_Contamination_GeneList.gtf
 	cd ${CURRENT_DIR}
