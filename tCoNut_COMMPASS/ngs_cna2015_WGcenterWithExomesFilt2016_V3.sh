@@ -25,14 +25,6 @@
 ## SOFTWARE.
 ##
 ## Major Contributors: Jessica Aldrich, Austin Christofferson 
-## Minor Contributors: 
-##
-## Description -
-##
-##
-## Usage = 
-##
-## Options:
 
 # Usage and Command line options
 
@@ -43,7 +35,7 @@ Program:	tCoNuT_MMRF Pipeline
 Version:	v1.0.0
 Summary:	TGen Copy Number Tool version specific for MMRF CoMMpass study
 
-Usage:		$(basename "$0") [Options] -b <> -n <> -N <> -t <> -T <> -h <> -m </packages/MCR/9.0/v90>
+Usage:		$(basename "$0") [Options] -N <normal_sample_id> -T <tumor_sample_id> -b <padded_targets.bed> -n <nomral.dat> -t <tumor.dat> -h <normalHSmetrics> -H <tumorHSmetrics> -v <HC.vcf> -m </packages/MCR/9.0/v90> -d <dbsnp_137.b37.vcf> -s <snpSift.jar> -c <ccds.gtf> -f <targets> -o <out_prefix>
 
 Options:
 	-N	<string>	Exome normal sample name	Required
@@ -263,15 +255,6 @@ type Rscript >/dev/null 2>&1 || { echo >&2 "Require \"\Rscript\"  but it's not i
 
 
 #}}}
-
-#module load VCFtools/0.1.10		Not sure if this is even used.
-
-#module load BEDTools/2.26.0
-#module load perl/5.14.2
-#module load R/3.0.0
-
-#export PERL5LIB=$PERL5LIB:/home/jaldrich/perl5/lib/perl5
-
 
 SCRIPTDIR=$(dirname $(readlink -f "$0"))
 ZTABLE=${SCRIPTDIR}/ztable.txt
