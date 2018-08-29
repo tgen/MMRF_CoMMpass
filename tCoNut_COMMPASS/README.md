@@ -4,8 +4,6 @@ TGen Copy Number Tool version specific for MMRF CoMMpass study
 ## Summary
 tCoNuT is a read depth based comparative copy number tool designed for whole genome, exome and panel NGS data. In addition, tCoNuT pipeline provides scripts for calculating B-allele frequencies.  B-allele frequencies can be used in conjunction with copy number to determine regions of LOH and provide additional evidence of a copy number change. The tool requires a control sample which can be matched or unmatched to the affected tumor sample. The tCoNuT_COMMPASS version of tCoNuT was modified to filter out regions of low-quality to remove an observed ‘waterfall’ effect, add gender aware adjustment to the log2 fold change for chromosome X and Y, and leverage high-coverage exome data to identify high-quality, common SNPs whose positions are used for centering low-coverage long-insert whole-genome data. 
 
-Please see tCoNuT_COMMPASS wiki for a diagram of tCoNuT_COMMPASS workflow.
-
 ## System Requirements
 The tCoNut_COMMPASS pipeline was developed and run on [CentOS Linux release 7.2.1511](http://vault.centos.org/7.2.1511/) (Core). Most of the scripts are platform independent. Uncompiled MATLAB code (*.m) found in tCoNuT_COMMPASS/pegasusCNA_MMRF
  folder is not platform dependent but would require a license of MATLAB to run. The compiled MATLAB code only requires the MCR.
