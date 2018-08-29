@@ -1,124 +1,120 @@
 # tCoNuT_COMMPASS
 TGen Copy Number Tool version specific for MMRF CoMMpass study
 
-# About
-tCoNuT_COMMPASS is a read depth based comparative copy number tool designed for whole genome, exome and panel NGS data. In addition, tCoNuT pipeline provides scripts for calculating B-allele frequencies.  B-allele frequencies can be used in conjunction with copy number to determine regions of LOH and provide additional evidence of a copy number change. The tool requires a control sample which can be matched or unmatched to the affected or tumor sample. 
+## Summary
+tCoNuT is a read depth based comparative copy number tool designed for whole genome, exome and panel NGS data. In addition, tCoNuT pipeline provides scripts for calculating B-allele frequencies.  B-allele frequencies can be used in conjunction with copy number to determine regions of LOH and provide additional evidence of a copy number change. The tool requires a control sample which can be matched or unmatched to the affected tumor sample. The tCoNuT_COMMPASS version of tCoNuT was modified to filter out regions of low-quality to remove an observed ‘waterfall’ effect, add gender aware adjustment to the log2 fold change for chromosome X and Y, and leverage high-coverage exome data to identify high-quality, common SNPs whose positions are used for centering low-coverage long-insert whole-genome data. 
 
 Please see tCoNuT_COMMPASS wiki for a diagram of tCoNuT_COMMPASS workflow.
 
-#Requirements
-A local installation of Perl and R are required.  
+## System Requirements
+The tCoNut_COMMPASS pipeline was developed and run on [CentOS Linux release 7.2.1511](http://vault.centos.org/7.2.1511/) (Core). Most of the scripts are platform independent. Uncompiled MATLAB code (*.m) found in tCoNuT_COMMPASS/pegasusCNA_MMRF
+ folder is not platform dependent but would require a license of MATLAB to run. The compiled MATLAB code only requires the MCR.
 
-R needs the DNAcopy package found at
-https://bioconductor.org/packages/release/bioc/html/DNAcopy.html.
+* 6G of RAM
+* 4 processing cores
+* [R 3.4.1 or above](https://cran.r-project.org/) with the following packages:
+	+ [DNAcopy](https://bioconductor.org/packages/release/bioc/html/DNAcopy.html)
+	+ [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html)
+	+ [reshape2](https://cran.r-project.org/web/packages/reshape2/README.html)
+	+ [grid](https://stat.ethz.ch/R-manual/R-devel/library/grid/html/grid-package.html)
+	+ [gridExtra](https://cran.r-project.org/web/packages/gridExtra/index.html)
+* [perl or above](https://www.perl.org/get.html) with the following modules:
+	+ [Statistics::R](https://metacpan.org/pod/release/GMPASSOS/Statistics-R-0.02/lib/Statistics/R.pm)
+* [MATLAB Runtime (MCR) v9.0](https://www.mathworks.com/products/compiler/matlab-runtime.html)
+* [bedtools 2.26.0 or above](https://bedtools.readthedocs.io/en/latest/)
+* [SnpSift 4.2](http://snpeff.sourceforge.net/SnpSift.html)
 
-validateCNAVariantsVCF.pl requires Statistics::R module
-http://search.cpan.org/~gmpassos/Statistics-R-0.02/lib/Statistics/R.pm
+## Options
 
-tCoNuT requires the MATLAB Runtime (MCR) v9.0. Link and instructions for installation are found at http://www.mathworks.com/products/compiler/mcr/. Compiled MATLAB code does not require a MATLAB license just requires the MCR.
+| Option  | Argument  | Required  | Description |
+| ------- |:--------- |:---------:|:-------------- |
+| -N | string |Yes|Exome normal sample name|
+| -T | string |Yes|Exome tumor sample name|
+| -b | file |Yes|Padded targets file|
+| -n | file |Yes|Genome Normal Dat file|
+| -t | file |Yes|Genome Tumor Dat file|
+| -h | file |Yes|Exome Normal HS Metrics|
+| -H | file |Yes|Exome Tumor HS Metrics|
+| -v | file |Yes|Exome Haplotype Caller VCF|
+| -m | path |Yes|MCR path|
+| -d | file |Yes|dbSNP vcf|
+| -s | file |Yes|SnpSift jar file|
+| -c | file |Yes|CCDS gtf|
+| -f | file |Yes|Copy Number targets file|
+| -o | string |Yes|Out file prefix|
 
-tCoNuT pipeline was developed and compiled (specifically MATLAB code) on Linux 64 systems. Most of the scripts are platform independent. Uncompiled MATLAB code (*.m) found in tCoNuT_MMRF/tCoNuT_COMMPASS folder is not platform dependent but would require a license of MATLAB to run.
+## Usage 
+To get the arguments and options to the script, run:
 
-#Usage 
+`ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh --help`
 
-Please refer to tCoNuT workflow diagram for an overview. In addition, refer to clonalCovPerl.pbs and ngs_cna2015.pbs for examples on how to call each script.
+Prior to running the CoMMpass version of the tCoNuT pipeline, ".dat" files from the Tumor and Constitutional WGS bams, [Picard HS](https://broadinstitute.github.io/picard/) metrics and a dbSNP annotated [HaplotypeCaller](https://software.broadinstitute.org/gatk/documentation/tooldocs/3.8-0/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php) vcf from the WES bams with the -D option need to be generated. Additionally, the following files will need to be downloaded and provided as arguments to the parameterized workflow.
 
-<b>Step 1 (prior to tCoNuT):</b> Align paired-end sequencing data (BAMs) for each control and affected/tumor samples. This has only been tested with BWA aligned paired ends but should work with other aligners. 
+* [Agilent_SureSelect_V5_plusUTR_hs37d5_GRCh37.74_PaddedTargets_intersect_sorted_padded100.bed](http://tools.tgen.org/Files/tCoNuT_BEDfiles/)
+* [dbsnp_137.b37.vcf](http://tools.tgen.org/Files/tCoNuT_BEDfiles/)
+* [Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf](http://tools.tgen.org/Files/tCoNuT_BEDfiles/)
+* [CNA_waterfall_filter_035.txt](http://tools.tgen.org/Files/tCoNuT_BEDfiles/)
 
-Here is example of how we run bwa-mem on a sample.
-```
-~/bin/bwa-0.7.8/bwa mem -R ${TAGS} -M -t8 REFERENCE.fa SAMPLE_R1.fastq.gz SAMPLE_R2.fastq.gz
-```
-Run HaploType Caller(HC) on control and tumor BAMs together. Use option -D to get dbSNP annotations. RS numbers are used for filtering for high quality SNPs.  
-
-Annotate HC VCF with dbSNP using SnpEff/SnpSift. GMAF/CAF dbSNP annotations inserted by SnpSift are used for filtering for high quality SNPs.
-
-You should now have two BAMs (control and affected) and HC VCF dbSNP annotated using SnpEff/SnpSift.
-
-Currently, tCoNuT can only be used on human data. 
-
-<b>Step 2:</b> Create DAT files using tgen_CloneCov.pl for each BAM separately.
+<b>Step 1 (prior to tCoNuT):</b> Create DAT files using tgen_CloneCov.pl for each WGS BAM separately.
 
 ```
 ${tCoNuTdir}/tgen_CloneCov.pl I=${BAMFILE} O=${OUTFILE} M=RG: S=${SAMTOOLS}
 ```
 
-You should now have two DAT files (control and affected).
-
-<b>Step 3:</b> Run parseMergeVCF.pl on HC VCF (snpEff annotated) to get baf.txt and merged.vcf.txt
+<b>Step 2 (prior to tCoNuT):</b> Create annotated HC vcf from the WES BAMS.
 
 ```
-SNPDEPTH=50 	#	<<<< This can be modified for specific cases depending on target coverage. Another option would be to use ${TUMORX} from hsMetrics above
-${tCoNuTdir}/parseMergeVCF.pl ${HCVCF} ${CONTROLSAMPLENAME} ${AFFECTEDSAMPLENAME} ${SNPDEPTH}
+# Step 1 – Haplotype Caller the Match Constitutional and Tumor BAM
+java -Djava.io.tmpdir=/scratch/tmp/ -jar -Xmx32g ${GATKPATH}/GenomeAnalysisTK.jar \
+	-l INFO \
+	-R ${REF} \
+	-L ${CHRLIST}/Step${STEP}.list \
+	-nct 8 \
+	-T HaplotypeCaller \
+	${BAMLIST} \
+	-D ${KNOWN} \
+	-mbq 10 \
+	-o ${TRK}_Step${STEP}.HC.vcf 
+
+# Step 2 – Concatenate all VCF's with GATK	
+java -cp ${GATKPATH_v}/GenomeAnalysisTK.jar org.broadinstitute.sting.tools.CatVariants \
+	-R ${REF} $vcfList \
+	-out ${TRK}.HC_All.vcf \
+	-assumeSorted
 ```
 
-You should now have ${CONTROLSAMPLENAME}-${AFFECTEDSAMPLENAME}.baf.txt and merged.vcf.txt
-
-<b>Step 4:</b> Run tCoNuT with DAT and merged.vcf.txt files. You will also need a TARGETSFILE if running as exome.  You can find these at http://tools.tgen.org/Files/tCoNuT_BEDfiles/ for some Agilent kits. This example is showing parameters for exome data.
+<b>Step 3 (prior to tCoNuT):</b> Create Picard HS metrics files.
 
 ```
-##
-## Parameters for tCoNuT.  Currently set for EXOME data. Please ngs_cna2015_WG.pbs for suggested whole genome parameters.
-##
-MCRPATH=/packages/MCR/9.0/v90
-TARGETSFILE=Agilent_Clinical_Research_Exome_hs37d5.cna.bed # Copy number BED file of Agilent Clinic Research exome targets
-HETFILE=merged.vcf.txt  #   from parseMergeVCF.pl
-
-smWin=6                 #   <<<< THIS CAN BE ADJUSTED - smoothing window size >>>>
-fcThresh=0.75           #   <<<< THIS CAN BE ADJUSTED - fold-change threshold - plot >>>>
-res=2                   #   <<<< THIS CAN BE ADJUSTED - min resolution >>>>
-maxGap=1000             #   <<<< THIS CAN BE ADJUSTED - max distance between consecutive postions >>>>
-
-##
-## Average Coverage calculated Picard hsMetrics can be used for minimum depth (${NORMX} and ${TUMORX})
-##
-hetDepthN=${NORMX}      #   <<<< THIS CAN BE ADJUSTED - min depth of diploid het position >>>>
-hetDepthT=${TUMORX}     #   <<<< THIS CAN BE ADJUSTED - min depth of diploid het position >>>>
-hetDev=0.025            #   <<<< THIS CAN BE ADJUSTED - allowable deviation from ref allele frequency of 0.5+/-0.025
-
-readDepth=$( echo "$hetDepthN * 3" | bc )  # Set max read depth to 3 x control sample's average target coverage (from Picard HS metrics)
-
-${tCoNuTdir}/tCoNuT/run_tCoNuT.sh ${MCRPATH} ${NORMALDAT} ${TUMORDAT} ${OFILE} ${HETFILE} ${smWin} ${fcThresh} ${assayID} ${res} ${readDepth} ${maxGap} ${hetDepthN} ${hetDepthT} ${hetDev} ${TARGETSFILE}
-```
-<b>Step 5:</b> Segmentation of exome copy number with DNAcopy. Depending on your data and study objective you might need to adjust parameters for DNAcopy to get the segmentation optimized for your problem. For whole genome, use runDNAcopyV2.R.
-
-```
-### Copy Number ###
-Rscript --vanilla ${tCoNuTdir}/segmentation/runDNAcopyExomeV2.R ${OFILE}.cna.tsv ${OFILE}.seg
-
-### BAF ###
-Rscript --vanilla ${tCoNuTdir}/segmentation/runDNAcopyBAF.R baf.txt ${OFILE}.baf
+java -Xmx15g -jar ${PICARDPATH}/CalculateHsMetrics.jar \
+    REFERENCE_SEQUENCE=${REF} \
+    BAIT_INTERVALS=${BAITS} \
+    TARGET_INTERVALS=${TARGETS} \
+    INPUT=${BAMFILE} \
+    OUTPUT=${BAMFILE}.picHSMetrics \
+    PER_TARGET_COVERAGE=${BAMFILE}.picStats.HsPerTargetCov \
+    TMP_DIR=/scratch/tgenjetstream/tmp/ \
+    VALIDATION_STRINGENCY=SILENT
 ```
 
-<b>Step 6:</b> Convert copy number SEG file to VCF format (really its a gVCF) and annotate. Example VCFs are in VCF folder.
+
+<b>Step 4:</b> Run ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh with the following options.
 
 ```
-###COPY NUMBER####
-##Annotate and convert SEG file to gVCF
-DUPTHRESH=0.58     #   <<<< THIS CAN BE ADJUSTED - Amplification Threshold - log2 fold-change >>>>
-DELTHRESH=-0.99    #   <<<< THIS CAN BE ADJUSTED - Deletion Threshold - log2 fold-change >>>>
+ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh \
+    -N MMRF_1157_1_PB_Whole_C1_KHS5U_L13424 \
+    -T MMRF_1157_3_BM_CD138pos_T1_KBS5U_L06509 \
+    -b /path/to/Agilent_SureSelect_V5_plusUTR_hs37d5_GRCh37.74_PaddedTargets_intersect_sorted_padded100.bed \
+    -n MMRF_1157_3_PB_WBC_C3_KHWGL_L06740.proj.md.jr.bam.clc.cln.dat \
+    -t MMRF_1157_3_BM_CD138pos_T1_KHWGL_L06741.proj.md.jr.bam.clc.cln.dat \
+    -h MMRF_1157_1_PB_Whole_C1_KHS5U_L13424.proj.md.jr.bam.picHSMetrics \
+    -H MMRF_1157_3_BM_CD138pos_T1_KBS5U_L06509.proj.md.jr.bam.picHSMetrics \
+    -v MMRF_1157_1_PB_Whole_C1_KHS5U_L13424-MMRF_1157_3_BM_CD138pos_T1_KBS5U_L06509.HC_All.snpEff.vcf \
+    -m /path/to/MCR/9.0 \
+    -d /path/to/dbsnp_137.b37.vcf \
+    -s /path/to/snpEff_4.2_2015-12-05/SnpSift.jar \
+    -c /path/to/Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf \
+    -f /path/to/CNA_waterfall_filter_035.txt \
+    -o MMRF_1157_3_PB_WBC_C3_KHWGL_L06740-MMRF_1157_3_BM_CD138pos_T1_KHWGL_L06741
 
-${tCoNuTdir}/annotSeg.pl ${CCDSLIST} ${OFILE}.cna.seg ${DUPTHRESH} ${DELTHRESH}
-
-${tCoNuTdir}/validateCNAVariantsVCF.pl ${OFILE}.cna.seg.vcf baf.txt ${ZTABLE}
 ```
-<b>Step 7:</b> Make some plots (See tCoNuT wiki for examples)
-
-```
-## Plotting of copy number
-Rscript --vanilla ${tCoNuTdir}/plotting/plotCGH_EXOME.R ${OFILE}.cna.tsv ${OFILE}.amp.tsv ${OFILE}.del.tsv ${OFILE}
-
-## Plotting of copy number with hets superimposed
-if [ -f ${OFILE}.hets.tsv ];then
-        Rscript --vanilla ${tCoNuTdir}/plotting/plotCGHwithHets.R ${OFILE}.cna.tsv ${OFILE}.amp.tsv ${OFILE}.del.tsv ${OFILE}.hets.tsv ${OFILE}_withhets
-fi
-
-## Plotting of BAF
-Rscript --vanilla ${tCoNuTdir}/plotting/plotBAF.R baf.txt ${OFILE}.baf
-
-## Linear Genome Plotting of CNA and BAF (both scripts are MATLAB code)
-MCRPATH=/packages/MCR/9.0/v90
-${tCoNuTdir}/plotting/plotLinearCNA/run_plotLinearCNAandBAF.sh ${MCRPATH} ${OFILE}.cna.tsv baf.txt ${OFILE}.cnaBAF.png
-${tCoNuTdir}/plotting/plotLinearCNAabsBAF/run_plotLinearCNAandAbsBAF.sh ${MCRPATH} ${OFILE}.cna.tsv baf.txt ${OFILE}.cnaAbsBAF.png
-```
-
