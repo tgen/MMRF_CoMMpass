@@ -111,7 +111,7 @@ ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh \
     -t MMRF_1157_3_BM_CD138pos_T1_KHWGL_L06741.proj.md.jr.bam.clc.cln.dat \
     -h MMRF_1157_1_PB_Whole_C1_KHS5U_L13424.proj.md.jr.bam.picHSMetrics \
     -H MMRF_1157_3_BM_CD138pos_T1_KBS5U_L06509.proj.md.jr.bam.picHSMetrics \
-    -v MMRF_1157_1_PB_Whole_C1_KHS5U_L13424-MMRF_1157_3_BM_CD138pos_T1_KBS5U_L06509.HC_All.snpEff.vcf \
+    -v MMRF_1157_1_PB_Whole_C1_KHS5U_L13424-MMRF_1157_3_BM_CD138pos_T1_KBS5U_L06509.HC_All.vcf \
     -m /path/to/MCR/9.0 \
     -d /path/to/dbsnp_137.b37.vcf \
     -s /path/to/snpEff_4.2_2015-12-05/SnpSift.jar \
