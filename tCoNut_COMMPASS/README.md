@@ -2,7 +2,9 @@
 TGen Copy Number Tool version specific for MMRF CoMMpass study
 
 ## Summary
-tCoNuT is a read depth based comparative copy number tool designed for whole genome, exome and panel NGS data. In addition, tCoNuT pipeline provides scripts for calculating B-allele frequencies.  B-allele frequencies can be used in conjunction with copy number to determine regions of LOH and provide additional evidence of a copy number change. The tool requires a control sample which can be matched or unmatched to the affected tumor sample. The tCoNuT_COMMPASS version of tCoNuT was modified to filter out regions of low-quality to remove an observed ‘waterfall’ effect, add gender aware adjustment to the log2 fold change for chromosome X and Y, and leverage high-coverage exome data to identify high-quality, common SNPs whose positions are used for centering low-coverage long-insert whole-genome data. 
+tCoNuT is a read depth based comparative copy number tool designed for whole genome, exome and panel NGS data. In addition, tCoNuT pipeline provides scripts for calculating B-allele frequencies.  B-allele frequencies can be used in conjunction with copy number to determine regions of LOH and provide additional evidence of a copy number change. The tool requires a control sample which can be matched or unmatched to the affected tumor sample. The tCoNuT_COMMPASS version of tCoNuT was modified to filter out regions of low-quality to remove an observed ‘waterfall’ effect, add gender aware adjustment to the log2 fold change for chromosome X and Y, and leverage high-coverage exome data to identify high-quality, common SNPs whose positions are used for centering low-coverage long-insert whole-genome data.
+
+The tConut_COMMPASS workflow can be run with the included `ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh` script.  
 
 ## System Requirements
 The tCoNut_COMMPASS pipeline was developed and run on [CentOS Linux release 7.2.1511](http://vault.centos.org/7.2.1511/) (Core). Most of the scripts are platform independent. Uncompiled MATLAB code (*.m) found in tCoNuT_COMMPASS/pegasusCNA_MMRF
@@ -23,6 +25,8 @@ The tCoNut_COMMPASS pipeline was developed and run on [CentOS Linux release 7.2.
 * [SnpSift 4.2](http://snpeff.sourceforge.net/SnpSift.html)
 
 ## Options
+
+The `ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh` workflow options are:
 
 | Option  | Argument  | Required  | Description |
 | ------- |:--------- |:---------:|:-------------- |
@@ -46,14 +50,14 @@ To get the arguments and options to the script, run:
 
 `ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh --help`
 
-Prior to running the CoMMpass version of the tCoNuT pipeline, ".dat" files from the Tumor and Constitutional WGS bams, [Picard HS](https://broadinstitute.github.io/picard/) metrics and a dbSNP annotated [HaplotypeCaller](https://software.broadinstitute.org/gatk/documentation/tooldocs/3.8-0/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php) vcf from the WES bams with the -D option need to be generated. Additionally, the following files will need to be downloaded and provided as arguments to the parameterized workflow.
+Prior to running the CoMMpass version of the tCoNuT pipeline, DAT files from the Tumor and Constitutional WGS bams, [Picard HS](https://broadinstitute.github.io/picard/) metrics and a dbSNP annotated [HaplotypeCaller](https://software.broadinstitute.org/gatk/documentation/tooldocs/3.8-0/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php) vcf from the WES bams with the -D option need to be generated. Additionally, the following files will need to be downloaded and provided as arguments to the parameterized workflow.
 
-* [Agilent_SureSelect_V5_plusUTR_hs37d5_GRCh37.74_PaddedTargets_intersect_sorted_padded100.bed](http://tools.tgen.org/Files/tCoNuT_BEDfiles/)
-* [dbsnp_137.b37.vcf](http://tools.tgen.org/Files/tCoNuT_BEDfiles/)
-* [Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf](http://tools.tgen.org/Files/tCoNuT_BEDfiles/)
-* [CNA_waterfall_filter_035.txt](http://tools.tgen.org/Files/tCoNuT_BEDfiles/)
+* [Agilent_SureSelect_V5_plusUTR_hs37d5_GRCh37.74_PaddedTargets_intersect_sorted_padded100.bed](http://tools.tgen.org/Files/CoMMpass_REFfiles/)
+* [dbsnp_137.b37.vcf](http://tools.tgen.org/Files/CoMMpass_REFfiles/)
+* [Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf](http://tools.tgen.org/Files/CoMMpass_REFfiles/)
+* [CNA_waterfall_filter_035.txt](http://tools.tgen.org/Files/CoMMpass_REFfiles/)
 
-<b>Step 1 (prior to tCoNuT):</b> Create DAT files using tgen_CloneCov.pl for each WGS BAM separately.
+<b>Step 1 (prior to tCoNuT):</b> Create DAT files using `tgen_CloneCov.pl` for each WGS BAM separately.
 
 ```
 ${tCoNuTdir}/tgen_CloneCov.pl I=${BAMFILE} O=${OUTFILE} M=RG: S=${SAMTOOLS}
@@ -96,7 +100,7 @@ java -Xmx15g -jar ${PICARDPATH}/CalculateHsMetrics.jar \
 ```
 
 
-<b>Step 4:</b> Run ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh with the following options.
+<b>Step 4:</b> Run `ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh` with the following options.
 
 ```
 ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh \
