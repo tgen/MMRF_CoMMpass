@@ -55,7 +55,7 @@ Prior to running the CoMMpass version of the tCoNuT pipeline, DAT files from the
 * [Agilent_SureSelect_V5_plusUTR_hs37d5_GRCh37.74_PaddedTargets_intersect_sorted_padded100.bed](http://tools.tgen.org/Files/CoMMpass_REFfiles/)
 * [dbsnp_137.b37.vcf](http://tools.tgen.org/Files/CoMMpass_REFfiles/)
 * [Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf](http://tools.tgen.org/Files/CoMMpass_REFfiles/)
-* [CNA_waterfall_filter_035.txt](http://tools.tgen.org/Files/CoMMpass_REFfiles/)
+* [MMRF_CoMMpass_CN_Filter.txt](http://tools.tgen.org/Files/CoMMpass_REFfiles/)
 
 <b>Step 1 (prior to tCoNuT):</b> Create DAT files using `tgen_CloneCov.pl` for each WGS BAM separately.
 
@@ -116,7 +116,7 @@ ngs_cna2015_WGcenterWithExomesFilt2016_V3.sh \
     -d /path/to/dbsnp_137.b37.vcf \
     -s /path/to/snpEff_4.2_2015-12-05/SnpSift.jar \
     -c /path/to/Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf \
-    -f /path/to/CNA_waterfall_filter_035.txt \
+    -f /path/to/MMRF_CoMMpass_CN_Filter.txt \
     -o MMRF_1157_3_PB_WBC_C3_KHWGL_L06740-MMRF_1157_3_BM_CD138pos_T1_KHWGL_L06741
 
 ```
