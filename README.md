@@ -1,4 +1,6 @@
-![MMRF Logo](/images/MMRF_Square_Tag_3c_SM.jpeg)
+<img src="/images/MMRF_Square_Tag_3c_SM.jpeg" width="285" height="74.8" align="left" title="MMRF Logo">
+<img src="/images/TGen_Color_LOGO_medium.png" width="208.3" height="78" align="right" title="TGen Logo">
+
 # MMRF CoMMpass Study
 
 ### What is the MMRF CoMMpass Study?
