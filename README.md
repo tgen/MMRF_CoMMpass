@@ -24,7 +24,11 @@ Data generated from the MMRF CoMMpass Study is released in a staged manner every
 
 1. https://research.themmrf.org/
 2. dbGAP
-    1. Accession Number - PHS000748
+   1. Accession Number - PHS000748
+   2. https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000748
+3. Genomic Data Commons (GDC)
+   1. https://portal.gdc.cancer.gov/
+   2. https://portal.gdc.cancer.gov/projects/MMRF-COMMPASS 
 
 ---
 
