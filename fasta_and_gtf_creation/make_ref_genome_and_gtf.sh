@@ -35,7 +35,8 @@ BASEDIR=$(dirname "$0")
 	sed 's/NC_007605/NC_007605 gi|82503188|ref|NC_007605.1| Human herpesvirus 4 complete wild type genome/g' hs37d5.fa > hs37d5.anno.fa
 
 # 3) Download the ERCC spike-ins fasta file
-	wget http://tools.invitrogen.com/downloads/ERCC92.fa
+	wget https://assets.thermofisher.com/TFS-Assets/LSG/manuals/ERCC92.zip
+	unzip ERCC92.zip
 
 # 4) Download the Human ribosomal DNA complete repeting unit and edit to be consistent with MT entry 
 	wget -O U13369.1.fa "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&amp;id=U13369.1&amp;rettype=fasta"
@@ -67,8 +68,8 @@ BASEDIR=$(dirname "$0")
 	done	
 
 	# Convert to lower case to keep consistency with pipeline reference geneome
-	awk '$0 !~ />/ {$0=tolower($0) } ; { print $0 }' NC_001357.1.fa > NC_001357.1.lower.fa
-	awk '$0 !~ />/ {$0=tolower($0) } ; { print $0 }' NC_001526.2.fa > NC_001526.2.lower.fa
+	gawk '$0 !~ />/ {$0=tolower($0) } ; { print $0 }' NC_001357.1.fa > NC_001357.1.lower.fa
+	gawk '$0 !~ />/ {$0=tolower($0) } ; { print $0 }' NC_001526.2.fa > NC_001526.2.lower.fa
 
 	# Edit 
 	sed 's/FR872717.1 Human papillomavirus type 11 complete genome/FR872717 gi|335334258|emb|FR872717.1| Human papillomavirus type 11 complete genome/' FR872717.1.fa >> Cancer_Related_Viruses.fa
@@ -100,10 +101,7 @@ BASEDIR=$(dirname "$0")
 # 2) Uncompress GTF
         gunzip Homo_sapiens.GRCh37.74.gtf.gz
 
-# 3) Download the ERCC GTF
-	wget http://tools.invitrogen.com/downloads/ERCC92.gtf
-
-# 4) Determine which chromosomes are present in this GTF and remove contigs that are not in the reference
+# 3) Determine which chromosomes are present in this GTF and remove contigs that are not in the reference
 	cut -f1 Homo_sapiens.GRCh37.74.gtf | sort | uniq > Ensembl_v74_Unique_Chromosomes.txt
 
 	# Remove all contigs not in the referenece genome
@@ -113,22 +111,20 @@ BASEDIR=$(dirname "$0")
 		awk '{print $1}' | \
 		cut -d">" -f2 > hs37d5_plusRibo_plusOncoViruses_plusERCC.fa.chrom.contigs.txt
 
-	awk -F'\t' 'FNR==NR{a[$1]=$0;next} ($1 in a) { print $0 }' hs37d5_plusRibo_plusOncoViruses_plusERCC.fa.chrom.contigs.txt Homo_sapiens.GRCh37.74.gtf > Homo_sapiens.GRCh37.74.gtf.hs37d5.gtf
+	gawk -F'\t' 'FNR==NR{a[$1]=$0;next} ($1 in a) { print $0 }' hs37d5_plusRibo_plusOncoViruses_plusERCC.fa.chrom.contigs.txt Homo_sapiens.GRCh37.74.gtf > Homo_sapiens.GRCh37.74.gtf.hs37d5.gtf
 
-# 5) Add the ERCC contigs to the end of the GTF
+# 4) Add the ERCC contigs to the end of the GTF
 	cat Homo_sapiens.GRCh37.74.gtf.hs37d5.gtf ERCC92.gtf > Homo_sapiens.GRCh37.74.gtf.hs37d5.ERCC92.gtf
 
-# 6) Add in the EGFRvIII gtf right before EGFR-AS1-001
-	awk -F'\t' 'BEGIN{ STOP=0 ; OFS = "\t" } 
+# 5) Add in the EGFRvIII gtf right before EGFR-AS1-001
+	gawk -F'\t' 'BEGIN{ STOP=0 ; OFS = "\t" } 
 			FNR==NR{ a[NR]=$0; next } 
 			FNR == 1 { n = asort(a) } ; 
 			{ if (STOP == 0 && $0 ~ /EGFR-AS1-001/) 
 				{ STOP=1 ; 
-				for ( i = 1 , i <= n ; i++ ) 
+				for ( i = 1 ; i <= n ; i++ ) 
 					{ print a[i] } ; 
 					print $0  } 
 			else { print $0 }}' ${BASEDIR}/EGFRvIII.gtf Homo_sapiens.GRCh37.74.gtf.hs37d5.ERCC92.gtf > Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf
-
-# 
-
+ 
 
