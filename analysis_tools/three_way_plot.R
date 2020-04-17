@@ -29,6 +29,16 @@ option_list = list(
               default=NULL,
               help="File with gene expression per gene per sample",
               metavar="filename"), 
+  make_option(c("-q", "--qc_table"),
+              type="character",
+              default=NULL,
+              help="File molecular QC data (.xlsx)",
+              metavar="filename"), 
+  make_option(c("-s", "--subset"),
+              type="character",
+              default="Baseline",
+              help="Visit Type to Plot (All, Baseline, Secondary) [Baseline]",
+              metavar="Hugo_or_ENSG"), 
   make_option(c("-g", "--gene_name"),
               type="character",
               default=NULL,
@@ -84,9 +94,24 @@ if (opt$rdata_object == "SAVE") {
   print("Reading Gene Database File...")
   gene_db <- read_tsv(opt$gene_database)
   
+  # Read in QC table as this has the reason for collection
+  print("Reading QC data File...")
+  qc_data <- readxl::read_xlsx(opt$qc_table)
+  qc_data <- qc_data %>% 
+    rename("Patient_ID" = `Patients::KBase_Patient_ID`, "Study_Visit_ID" = `Visits::Study Visit ID`, "Reason_for_Collection" = `Visits::Reason_For_Collection`, "SampleName" = `QC Link SampleName`) %>% 
+    select(Patient_ID, Study_Visit_ID, Reason_for_Collection, SampleName) %>% 
+    separate(SampleName, sep = "_", into = c("Study", "Patient", "Visit", "Source", "Fraction", "Drop_Tumor_Increment", "Drop_Tumor_Assay", "Drop_Library")) %>% 
+    mutate(Subgroup = case_when(str_detect(Drop_Tumor_Increment, "T") ~ "Tumor", 
+                                str_detect(Drop_Tumor_Increment, "C") ~ "Constitutional", 
+                                TRUE ~ "Error")) %>% 
+    filter(Subgroup == "Tumor") %>% 
+    unite("Tumor_Specimen", Study:Fraction, sep = "_") %>% 
+    select(-starts_with("Drop_"))
+  
+  
   # Save the data files to an Rdata object, for fast recovery
   print("Saving Data as RData for fast access, in the future use (--rdata_object LOAD)...")
-  save(mut, cn, exp, gene_db, file = paste(opt$rdata_name, "RData", sep = "."))
+  save(mut, cn, exp, gene_db, qc_data, file = paste(opt$rdata_name, "RData", sep = "."))
 } else {
   print("Loading Existing RData File...")
   load(paste(opt$rdata_name, "RData", sep = "."))
@@ -143,7 +168,7 @@ if (dim(gene_check)[1] == 0) {
   q()
 }
 
-plot_prefix <- paste(hgnc_id, ensg_id, sep = "-")
+plot_prefix <- paste(hgnc_id, ensg_id, opt$subset, sep = "_")
 
 ###############################################
 ## Process input files to select gene of interest
@@ -195,6 +220,21 @@ gene_exp <- gene_exp %>%
 # Join data tables
 gene_table <- inner_join(gene_mut, gene_cn, by = c("Normal_Specimen","Tumor_Specimen"))
 gene_table <- inner_join(gene_table, gene_exp, by = "Tumor_Specimen")
+gene_table <- inner_join(gene_table, qc_data, by = "Tumor_Specimen")
+
+# Filter table
+if (opt$subset == "All") {
+  print("Plotting all visits with data")
+} else if (opt$subset == "Baseline") {
+  print("Plotting just the Baseline visits")
+  gene_table <- gene_table %>% filter(Reason_for_Collection == "Baseline")
+} else if (opt$subset == "Secondary") {
+  print("Plotting just the secondary, non-baseline, visits")
+  gene_table <- gene_table %>% filter(Reason_for_Collection != "Baseline")
+}
+
+# Save data table
+write_tsv(gene_table, paste(plot_prefix, "data.tsv", sep = "_"))
 
 # Sort joined table by mutation count
 gene_table <- gene_table %>% arrange(Mutation_Count)
