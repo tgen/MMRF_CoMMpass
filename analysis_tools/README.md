@@ -33,11 +33,17 @@ Options:
 	-d FILENAME, --gene_database=FILENAME
 		File with gene expression per gene per sample
 
+	-q FILENAME, --qc_table=FILENAME
+		File molecular QC data (.xlsx)
+
+	-s SUBSET_OF_INTEREST, --subset=SUBSET_OF_INTEREST
+		Visit Type to Plot (All, Baseline, Secondary) [Baseline]
+
 	-g HUGO_OR_ENSG, --gene_name=HUGO_OR_ENSG
 		Official Gene Name to Query
 
 	-f LOG2_OR_INTEGER, --copyNumber_format=LOG2_OR_INTEGER
-		How to plot copy number data (Log2 or Integer) [integer] 
+		How to plot copy number data (Log2 or Integer) [Integer] 
 
 	-r LOAD_OR_SAVE, --rdata_object=LOAD_OR_SAVE
 		Indicate if data should be saved to or loaded from existing Rdata
@@ -47,4 +53,27 @@ Options:
 
 	-h, --help
 		Show this help message and exit
+
+## Example Usage:
+
+# First Run: This loads all files and saves an Rdata object for faster loading on subseqeunt runs
+Rscript --vanilla ~/local/git_repositories/MMRF_CoMMpass/analysis_tools/three_way_plot.R \
+    --mutation_counts=MMRF_CoMMpass_IA17_combined_vcfmerger2_All_Canonical_NS_Variants_Gene_Mutation_Counts.tsv \
+    --copy_number=MMRF_CoMMpass_IA17_genome_gatk_cna_PerGene_LargestOverlap.tsv \
+    --gene_expression=MMRF_CoMMpass_IA17_salmon_geneUnstrandedIgFiltered_tpm.tsv \
+    --gene_database=ensembl_v98_geneDB.tsv \
+    --qc_table=MMRF_CoMMpass_IA17_Seq_QC_Summary.tsv \
+    --rdata_object=SAVE \
+    --rdata_name=MMRF_CoMMpass_IA17 \
+    --gene_name=TRAF3 \
+    --copyNumber_format=Integer \
+    --subset=Baseline
+
+Second Run: Faster results
+Rscript --vanilla ~/local/git_repositories/MMRF_CoMMpass/analysis_tools/three_way_plot.R \
+    --rdata_object=LOAD \
+    --rdata_name=MMRF_CoMMpass_IA17 \
+    --gene_name=TP53 \
+    --copyNumber_format=Integer \
+    --subset=Baseline
 ```

@@ -38,7 +38,7 @@ option_list = list(
               type="character",
               default="Baseline",
               help="Visit Type to Plot (All, Baseline, Secondary) [Baseline]",
-              metavar="Hugo_or_ENSG"), 
+              metavar="Subset_of_Interest"), 
   make_option(c("-g", "--gene_name"),
               type="character",
               default=NULL,
@@ -96,10 +96,10 @@ if (opt$rdata_object == "SAVE") {
   
   # Read in QC table as this has the reason for collection
   print("Reading QC data File...")
-  qc_data <- readxl::read_xlsx(opt$qc_table)
+  qc_data <- read_tsv(opt$qc_table, guess_max = 10000)
   qc_data <- qc_data %>% 
-    rename("Patient_ID" = `Patients::KBase_Patient_ID`, "Study_Visit_ID" = `Visits::Study Visit ID`, "Reason_for_Collection" = `Visits::Reason_For_Collection`, "SampleName" = `QC Link SampleName`) %>% 
-    select(Patient_ID, Study_Visit_ID, Reason_for_Collection, SampleName) %>% 
+    rename("Patient_ID" = KBase_Patient_ID, "Study_Visit_ID" = `Study Visit ID`, "SampleName" = `QC Link SampleName`) %>% 
+    select(Patient_ID, Study_Visit_ID, Reason_For_Collection, SampleName) %>% 
     separate(SampleName, sep = "_", into = c("Study", "Patient", "Visit", "Source", "Fraction", "Drop_Tumor_Increment", "Drop_Tumor_Assay", "Drop_Library")) %>% 
     mutate(Subgroup = case_when(str_detect(Drop_Tumor_Increment, "T") ~ "Tumor", 
                                 str_detect(Drop_Tumor_Increment, "C") ~ "Constitutional", 
@@ -177,48 +177,36 @@ plot_prefix <- paste(hgnc_id, ensg_id, opt$subset, sep = "_")
 ## MUTATION COUNTS PROCESSING
 # Select gene of interest from mutation table
 gene_mut <- mut %>% filter(Gene == ensg_id)
+print("Mut Filtered")
 
 # Pivot the table, update gene name, process normal-tumor sampleID to get specimenID
 gene_mut <- gene_mut %>% 
-  pivot_longer(-Gene, names_to = "Sample", values_to = "Mutation_Count") %>% 
-  separate(Sample, sep = "-", into = c("Normal", "Tumor")) %>% 
-  separate(Normal, sep = "_", into = c("Study", "Patient", "Visit", "Source", "Fraction", "Drop_Normal_Increment", "Drop_Normal_Assay")) %>% 
-  unite("Normal_Specimen", Study:Fraction, sep = "_") %>%
-  separate(Tumor, sep = "_", into = c("Study", "Patient", "Visit", "Source", "Fraction", "Drop_Tumor_Increment", "Drop_Tumor_Assay")) %>% 
-  unite("Tumor_Specimen", Study:Fraction, sep = "_") %>% 
-  select(-starts_with("Drop_"))
+  pivot_longer(-Gene, names_to = "Tumor_Specimen", values_to = "Mutation_Count")
 
 ## COPY NUMBER PROCESSING
 # Select gene of interest from the copy number table
 gene_cn <- cn %>% filter(Gene == ensg_id)
+print("CN Filtered")
 
 # Pivot the table, process normal-tumor sampleID to get specimenID
 gene_cn <- gene_cn %>% 
-  pivot_longer(-Gene, names_to = "Sample", values_to = "Copy_Number_log2") %>% 
-  separate(Sample, sep = "-", into = c("Normal", "Tumor")) %>% 
-  separate(Normal, sep = "_", into = c("Study", "Patient", "Visit", "Source", "Fraction", "Drop_Normal_Increment", "Drop_Normal_Assay")) %>% 
-  unite("Normal_Specimen", Study:Fraction, sep = "_") %>% 
-  separate(Tumor, sep = "_", into = c("Study", "Patient", "Visit", "Source", "Fraction", "Drop_Tumor_Increment", "Drop_Tumor_Assay")) %>% 
-  unite("Tumor_Specimen", Study:Fraction, sep = "_") %>% 
-  select(-starts_with("Drop_"), -Gene)
+  pivot_longer(-Gene, names_to = "Tumor_Specimen", values_to = "Copy_Number_log2")
 
 ## GENE EXPRESSION PROCESSING
 # Select gene of interest from the expression table
 gene_exp <- exp %>% filter(Gene == ensg_id)
+print("Exp Filtered")
 
 # Pivot the table, process tumor sampleID to get specimenID
 gene_exp <- gene_exp %>% 
-  pivot_longer(-Gene, names_to = "Tumor", values_to = "Expression_TPM") %>% 
-  separate(Tumor, sep = "_", into = c("Study", "Patient", "Visit", "Source", "Fraction", "Drop_Tumor_Increment", "Drop_Tumor_Assay")) %>% 
-  unite("Tumor_Specimen", Study:Fraction, sep = "_") %>%
-  select(-starts_with("Drop_"), -Gene)
+  pivot_longer(-Gene, names_to = "Tumor_Specimen", values_to = "Expression_TPM")
 
 ###############################################
 ## Join the processed data tables into single table
 ###############################################
 
 # Join data tables
-gene_table <- inner_join(gene_mut, gene_cn, by = c("Normal_Specimen","Tumor_Specimen"))
+gene_table <- inner_join(gene_mut, gene_cn, by = "Tumor_Specimen")
 gene_table <- inner_join(gene_table, gene_exp, by = "Tumor_Specimen")
 gene_table <- inner_join(gene_table, qc_data, by = "Tumor_Specimen")
 
@@ -227,10 +215,10 @@ if (opt$subset == "All") {
   print("Plotting all visits with data")
 } else if (opt$subset == "Baseline") {
   print("Plotting just the Baseline visits")
-  gene_table <- gene_table %>% filter(Reason_for_Collection == "Baseline")
+  gene_table <- gene_table %>% filter(Reason_For_Collection == "Baseline")
 } else if (opt$subset == "Secondary") {
   print("Plotting just the secondary, non-baseline, visits")
-  gene_table <- gene_table %>% filter(Reason_for_Collection != "Baseline")
+  gene_table <- gene_table %>% filter(Reason_For_Collection != "Baseline")
 }
 
 # Save data table
