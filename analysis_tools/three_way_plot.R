@@ -106,7 +106,8 @@ if (opt$rdata_object == "SAVE") {
                                 TRUE ~ "Error")) %>% 
     filter(Subgroup == "Tumor") %>% 
     unite("Tumor_Specimen", Study:Fraction, sep = "_") %>% 
-    select(-starts_with("Drop_"))
+    select(-starts_with("Drop_")) %>% 
+    unique()
   
   
   # Save the data files to an Rdata object, for fast recovery
