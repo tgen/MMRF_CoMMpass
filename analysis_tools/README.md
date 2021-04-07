@@ -58,13 +58,13 @@ Options:
 
 # First Run: This loads all files and saves an Rdata object for faster loading on subseqeunt runs
 Rscript --vanilla ~/local/git_repositories/MMRF_CoMMpass/analysis_tools/three_way_plot.R \
-    --mutation_counts=MMRF_CoMMpass_IA17_combined_vcfmerger2_All_Canonical_NS_Variants_Gene_Mutation_Counts.tsv \
-    --copy_number=MMRF_CoMMpass_IA17_genome_gatk_cna_PerGene_LargestOverlap.tsv \
-    --gene_expression=MMRF_CoMMpass_IA17_salmon_geneUnstrandedIgFiltered_tpm.tsv \
+    --mutation_counts=MMRF_CoMMpass_IA19_combined_vcfmerger2_All_Canonical_NS_Variants_Gene_Mutation_Counts.tsv \
+    --copy_number=MMRF_CoMMpass_IA19_genome_gatk_cna_PerGene_LargestOverlap.tsv \
+    --gene_expression=MMRF_CoMMpass_IA19_salmon_geneUnstrandedIgFiltered_tpm.tsv \
     --gene_database=ensembl_v98_geneDB.tsv \
-    --qc_table=MMRF_CoMMpass_IA17_Seq_QC_Summary.tsv \
+    --qc_table=MMRF_CoMMpass_IA19_Seq_QC_Summary.tsv \
     --rdata_object=SAVE \
-    --rdata_name=MMRF_CoMMpass_IA17 \
+    --rdata_name=MMRF_CoMMpass_IA19 \
     --gene_name=TRAF3 \
     --copyNumber_format=Integer \
     --subset=Baseline
@@ -72,7 +72,7 @@ Rscript --vanilla ~/local/git_repositories/MMRF_CoMMpass/analysis_tools/three_wa
 Second Run: Faster results
 Rscript --vanilla ~/local/git_repositories/MMRF_CoMMpass/analysis_tools/three_way_plot.R \
     --rdata_object=LOAD \
-    --rdata_name=MMRF_CoMMpass_IA17 \
+    --rdata_name=MMRF_CoMMpass_IA19 \
     --gene_name=TP53 \
     --copyNumber_format=Integer \
     --subset=Baseline
