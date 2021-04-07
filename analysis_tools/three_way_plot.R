@@ -98,7 +98,10 @@ if (opt$rdata_object == "SAVE") {
   print("Reading QC data File...")
   qc_data <- read_tsv(opt$qc_table, guess_max = 10000)
   qc_data <- qc_data %>% 
-    rename("Patient_ID" = KBase_Patient_ID, "Study_Visit_ID" = `Study Visit ID`, "SampleName" = `QC Link SampleName`) %>% 
+    rename("Patient_ID" = `Patients::KBase_Patient_ID`,
+           "Study_Visit_ID" = `Visits::Study Visit ID`,
+           "Reason_For_Collection" = `Visits::Reason_For_Collection`,
+           "SampleName" = `QC Link SampleName`) %>%
     select(Patient_ID, Study_Visit_ID, Reason_For_Collection, SampleName) %>% 
     separate(SampleName, sep = "_", into = c("Study", "Patient", "Visit", "Source", "Fraction", "Drop_Tumor_Increment", "Drop_Tumor_Assay", "Drop_Library")) %>% 
     mutate(Subgroup = case_when(str_detect(Drop_Tumor_Increment, "T") ~ "Tumor", 
