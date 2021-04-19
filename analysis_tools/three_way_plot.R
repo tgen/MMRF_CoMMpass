@@ -264,6 +264,8 @@ if ( maxCN < 1.321928095 ) {
 
 if ( maxCN < 2.0 ) {
   maxCNlog2 <- 2.0
+} else if ( maxCN >= 2.0) {
+  maxCNlog2 <- maxCN
 } 
 
 # Determin if the MIN CN is below the minimum threshold
