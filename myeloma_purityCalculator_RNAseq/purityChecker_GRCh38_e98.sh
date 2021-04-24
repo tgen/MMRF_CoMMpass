@@ -23,14 +23,15 @@
 
 # Samtools is required (http://www.htslib.org/)
 # Needed for idxstats step
-#SAMTOOLS=samtools
+module load samtools/1.9
 
 # Featurecounts is required (http://subread.sourceforge.net/)
 # It is used because it is an extremely fast counting application
+module load subread/2.0.0
 #FEATURECOUNTS=/home/jkeats/downloads/subread-1.4.6-source/bin/featureCounts
 
 # Add R to your path at TGEN
-#module load R/3.1.1
+module load R/3.6.1-phoenix
 # R and the ggplot2 package are required
 # Tested with R version 3.1.1 (2014-07-10) -- "Sock it to Me"
 # ggplot2 version 0.9.3.1
@@ -87,7 +88,7 @@ echo The File Cleanup setting is: $REMOVE_TEMP_FILES
 
 
 # Table for verbose tabulated results
-RESULTS_TABLE=/MMRF/purityChecker.txt
+RESULTS_TABLE=purityChecker.txt
 
 # Set the build directory, this makes it more dynamic
 # Capture the current script path to dynamically link to required graphing script
@@ -178,7 +179,13 @@ fi
 ##
 ####################################
 
-for INPUT_BAM in `ls *.starAligned.final.bam`
+
+#    echo "Decompressing: ${CRAM} -> ${BAM}"
+
+#    samtools view -@ 10 -h -b -o "${BAM}" "${CRAM}"
+#    samtools index -@ 10 "${BAM}"
+
+for INPUT_BAM in `ls *.bam`
 do
 
 # Get the filename base
@@ -203,7 +210,7 @@ else
 fi
 
 # Get total read count
-TOTAL_READ_COUNT=`${SAMTOOLS} idxstats ${INPUT_BAM} | grep -v "*" | awk '{sum+=$3} END {print sum}'`
+TOTAL_READ_COUNT=`samtools idxstats ${INPUT_BAM} | grep -v "*" | awk '{sum+=$3} END {print sum}'`
 echo "Total Reads = ${TOTAL_READ_COUNT}"
 
 # Generate a table for the counts by gene
@@ -219,7 +226,7 @@ echo "Total Reads = ${TOTAL_READ_COUNT}"
 
 echo Starting Feature Counts
 date '+%m/%d/%y %H:%M:%S'
-${FEATURECOUNTS} -g gene_name -O -s 0 -Q 10 -T 8 -C -a ${IG_GTF} -o temp_featureCounts_Counts.txt ${INPUT_BAM}
+featureCounts -g gene_name -O -s 0 -Q 10 -T 8 -C -a ${IG_GTF} -o temp_featureCounts_Counts.txt ${INPUT_BAM}
 date '+%m/%d/%y %H:%M:%S'
 echo Finished Coverage Analysis
 
