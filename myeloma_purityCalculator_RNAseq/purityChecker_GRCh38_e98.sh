@@ -100,28 +100,28 @@ RESULTS_TABLE=purityChecker.txt
 
 
 # Set the path to the immunoglobulin loci GTF for the respective genome version
-#IG_LOCI_REGIONS=${BUILD_DIR}Immunoglobulin_GRCh37_Loci.gtf
-#IG_LOCI_REGIONS=${BUILD_DIR}Immunoglobulin_GRCh38_Loci.gtf
+#IG_LOCI_REGIONS=${BUILD_DIR}/Immunoglobulin_GRCh37_Loci.gtf
+#IG_LOCI_REGIONS=${BUILD_DIR}/Immunoglobulin_GRCh38_Loci.gtf
 
 # The geometric mean is calculated from the RPKM of the non-B cell contamination genes
-CALCULATE_GEOMEAN_R=${BUILD_DIR}calculate_geomean.R
+CALCULATE_GEOMEAN_R=${BUILD_DIR}/calculate_geomean.R
 
 # Two graphs will be automatically generated, this code is provided but the path needs to be updated
-IGH_GRAPH_R=${BUILD_DIR}igh_graph.R
+IGH_GRAPH_R=${BUILD_DIR}/igh_graph.R
 
 # This is only used in the first run to build all the needed files
 #GTF=/home/tgenref/pecan/ensembl_v74/Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf
 
-#NON_BCELL_CONTAMINATION_GENELIST=${BUILD_DIR}Non_Bcell_Contamination_GeneList_e98.txt
+#NON_BCELL_CONTAMINATION_GENELIST=${BUILD_DIR}/Non_Bcell_Contamination_GeneList_e98.txt
 
 # These are created in the first run using the code provided below
-IGH_CONSTANT_GENES=${BUILD_DIR}IgH_Constant_Genes.txt
-IGH_VARIABLE_GENES=${BUILD_DIR}IgH_Variable_Genes.txt
-IGK_CONSTANT_GENES=${BUILD_DIR}IgK_Constant_Genes.txt
-IGK_VARIABLE_GENES=${BUILD_DIR}IgK_Variable_Genes.txt
-IGL_CONSTANT_GENES=${BUILD_DIR}IgL_Constant_Genes.txt
-IGL_VARIABLE_GENES=${BUILD_DIR}IgL_Variable_Genes.txt
-IG_GTF=${BUILD_DIR}Immunoglobulin_RegionsToCount.gtf
+IGH_CONSTANT_GENES=${BUILD_DIR}/IgH_Constant_Genes.txt
+IGH_VARIABLE_GENES=${BUILD_DIR}/IgH_Variable_Genes.txt
+IGK_CONSTANT_GENES=${BUILD_DIR}/IgK_Constant_Genes.txt
+IGK_VARIABLE_GENES=${BUILD_DIR}/IgK_Variable_Genes.txt
+IGL_CONSTANT_GENES=${BUILD_DIR}/IgL_Constant_Genes.txt
+IGL_VARIABLE_GENES=${BUILD_DIR}/IgL_Variable_Genes.txt
+IG_GTF=${BUILD_DIR}/Immunoglobulin_RegionsToCount.gtf
 
 ## CODE TO GENERATE NEEDED FILES FROM INPUT GTF FILE ##
 
