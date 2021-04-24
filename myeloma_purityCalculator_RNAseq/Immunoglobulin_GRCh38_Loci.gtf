@@ -1,0 +1,3 @@
+chr14	HEAVY_Locus	exon	105533663	106881350	.	+	.	gene_id "HEAVY_Locus"; transcript_id "HEAVY_Locus"; exon_number "1"; gene_name "HEAVY_Locus"; gene_biotype "HEAVY_Locus"; transcript_name "HEAVY_Locus"; exon_id "HEAVY_Locus";
+chr2	KAPPA_Locus	exon	88750483	90261139	.	+	.	gene_id "KAPPA_Locus"; transcript_id "KAPPA_Locus"; exon_number "1"; gene_name "KAPPA_Locus"; gene_biotype "KAPPA_Locus"; transcript_name "KAPPA_Locus"; exon_id "KAPPA_Locus";
+chr22	LAMBDA_Locus	exon	21995603	23057822	.	+	.	gene_id "LAMBDA_Locus"; transcript_id "LAMBDA_Locus"; exon_number "1"; gene_name "LAMBDA_Locus"; gene_biotype "LAMBDA_Locus"; transcript_name "LAMBDA_Locus"; exon_id "LAMBDA_Locus";
