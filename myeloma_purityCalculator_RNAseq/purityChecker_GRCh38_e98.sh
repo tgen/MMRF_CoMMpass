@@ -12,7 +12,12 @@
 #######################################################################
 #######################################################################
 
-
+# Set the build directory, this makes it more dynamic
+# Capture the current script path to dynamically link to required graphing script
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+BUILD_DIR=`dirname ${SCRIPT_PATH}`
+echo BUILD DIRECTORY = ${BUILD_DIR}
+#BUILD_DIR=/home/jkeats/toolkit_jkeats/myelomaPurityChecker/
 
 ##############################
 ##
@@ -23,15 +28,15 @@
 
 # Samtools is required (http://www.htslib.org/)
 # Needed for idxstats step
-module load samtools/1.9
+#module load samtools/1.9
 
 # Featurecounts is required (http://subread.sourceforge.net/)
 # It is used because it is an extremely fast counting application
-module load subread/2.0.0
+#module load subread/2.0.0
 #FEATURECOUNTS=/home/jkeats/downloads/subread-1.4.6-source/bin/featureCounts
 
 # Add R to your path at TGEN
-module load R/3.6.1-phoenix
+#module load R/3.6.1-phoenix
 # R and the ggplot2 package are required
 # Tested with R version 3.1.1 (2014-07-10) -- "Sock it to Me"
 # ggplot2 version 0.9.3.1
@@ -90,12 +95,7 @@ echo The File Cleanup setting is: $REMOVE_TEMP_FILES
 # Table for verbose tabulated results
 RESULTS_TABLE=purityChecker.txt
 
-# Set the build directory, this makes it more dynamic
-# Capture the current script path to dynamically link to required graphing script
-SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
-BUILD_DIR=`dirname ${SCRIPT_PATH}`
-echo BUILD DIRECTORY = ${BUILD_DIR}
-#BUILD_DIR=/home/jkeats/toolkit_jkeats/myelomaPurityChecker/
+
 
 # Set the path to the immunoglobulin loci GTF for the respective genome version
 #IG_LOCI_REGIONS=${BUILD_DIR}Immunoglobulin_GRCh37_Loci.gtf
