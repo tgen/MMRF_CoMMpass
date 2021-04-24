@@ -58,7 +58,7 @@ EOF
   exit 2
 }
 
-while getopts 'b:p:g:l:?h' flag
+while getopts 'b:p:g:l:i:?h' flag
 do
     case ${flag} in
         b) bam=${OPTARG};;
