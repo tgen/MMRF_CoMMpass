@@ -52,13 +52,14 @@ usage()
   -g      Input GTF (only needed to prepare resource files)
   -l      List of Genes not expressed in B-cells (only needed to prepare resource files)
   -i      Immunoglobulin Loci in GTF format (only needed to prepare resource files)
+  -d      Cleanup Temp files (Yes/No) - Set to "no" to debug
 
 EOF
 # EOF is found above and hence cat command stops reading. This is equivalent to echo but much neater when printing out.
   exit 2
 }
 
-while getopts 'b:p:g:l:i:?h' flag
+while getopts 'b:p:g:l:i:d:?h' flag
 do
     case ${flag} in
         b) bam=${OPTARG};;
@@ -66,6 +67,7 @@ do
         g) GTF=${OPTARG};;
         l) NON_BCELL_CONTAMINATION_GENELIST=${OPTARG};;
         i) IG_LOCI_REGIONS=${OPTARG};;
+        d) REMOVE_TEMP_FILES=${OPTARG};;
         h|?) usage;;
     esac
 done
@@ -75,10 +77,7 @@ echo The prepare status is: $BUILD_FILES
 echo The GTF is: $GTF
 echo The non B-cell Gene list is: $NON_BCELL_CONTAMINATION_GENELIST
 echo The Immunoglobulin loci file is: $IG_LOCI_REGIONS
-
-echo "Stop"
-exit 1
-
+echo The File Cleanup setting is: $REMOVE_TEMP_FILES
 
 ##############################
 ##
@@ -170,7 +169,7 @@ fi
 
 ## Developement (THIS MUST BE YES FOR DAY-2-DAY Usage, set to No in development to see temp files
 #REMOVE_TEMP_FILES=No
-REMOVE_TEMP_FILES=Yes
+#REMOVE_TEMP_FILES=Yes
 
 
 ####################################
