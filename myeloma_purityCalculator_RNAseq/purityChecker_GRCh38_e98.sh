@@ -18,35 +18,27 @@
 # Capture the current script path to dynamically link to required graphing script
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
 BUILD_DIR=`dirname ${SCRIPT_PATH}`
+echo
+echo "---------------------------------------"
+echo
 echo BUILD DIRECTORY = ${BUILD_DIR}
-#BUILD_DIR=/home/jkeats/toolkit_jkeats/myelomaPurityChecker/
 
 ##############################
 ##
 ## Require applications, these must be in your $PATH at runtime
+##    - samtools: required to generate idxstats and CRAM to BAM if needed (Tested with v1.9)
+##    - featureCounts/SubRead: required to generate count matrix (Tested with v2.0.0)
+##    - R: required for calculations and graphing (Tested with v3.6.1)
+##        * tidyverse (ggplot/dplyr/readr)
+##        * phsyc (geomean calculation)
 ##
 ##############################
 
-
-# Samtools is required (http://www.htslib.org/)
-# Needed for idxstats step
 #module load samtools/1.9
-
-# Featurecounts is required (http://subread.sourceforge.net/)
-# It is used because it is an extremely fast counting application
 #module load subread/2.0.0
-#FEATURECOUNTS=/home/jkeats/downloads/subread-1.4.6-source/bin/featureCounts
-
-# Add R to your path at TGEN
 #module load R/3.6.1-phoenix
-# R and the ggplot2 package are required
-# Tested with R version 3.1.1 (2014-07-10) -- "Sock it to Me"
-# ggplot2 version 0.9.3.1
-# These must be availalbe in your path
-# To Test enter the following commands
-# R			# Starts R
-# library(ggplot2)	# Loads ggplot2 library
-# q()			# Exits R
+
+## Usage help message
 
 usage()
 {
@@ -55,22 +47,38 @@ usage()
 
   Usage: $0 [ -bph options]
   -h      Display Help
-  -b      Inpute RNAseq BAM file from STAR alignment
-  -p      Prepare Resource Files (Yes/No)
+  -t      Threads to use [1]
+  -b      Inpute RNAseq file from STAR alignment
+  -a      File type (BAM/CRAM) [BAM] - CRAM will be converted to BAM on the fly
+  -o      Output Path
+  -p      Prepare Resource Files (Yes/No) [No]
   -g      Input GTF (only needed to prepare resource files)
   -l      List of Genes not expressed in B-cells (only needed to prepare resource files)
   -i      Immunoglobulin Loci in GTF format (only needed to prepare resource files)
-  -d      Cleanup Temp files (Yes/No) - Set to "no" to debug
+  -d      Cleanup Temp files (Yes/No) [Yes] - Set to "no" to debug
 
 EOF
 # EOF is found above and hence cat command stops reading. This is equivalent to echo but much neater when printing out.
   exit 2
 }
 
-while getopts 'b:p:g:l:i:d:?h' flag
+## Assign default values
+THREADS=1
+TYPE=BAM
+BUILD_FILES=No
+GTF=NA
+NON_BCELL_CONTAMINATION_GENELIST=NA
+IG_LOCI_REGIONS=NA
+REMOVE_TEMP_FILES=Yes
+
+## Capture and assign variables from inputs
+while getopts 't:b:a:o:p:g:l:i:d:?h' flag
 do
     case ${flag} in
-        b) bam=${OPTARG};;
+        t) THREADS=${OPTARG};;
+        b) INPUT_ALIGNMENT_FILE=${OPTARG};;
+        a) TYPE=${OPTARG};;
+        o) output=${OPTARG};;
         p) BUILD_FILES=${OPTARG};;
         g) GTF=${OPTARG};;
         l) NON_BCELL_CONTAMINATION_GENELIST=${OPTARG};;
@@ -80,7 +88,11 @@ do
     esac
 done
 
-echo The bam name is: $bam
+## Send variable information to log
+echo The assinged thread number is: $THREADS
+echo The Alignemnet filename is: $INPUT_ALIGNMENT_FILE
+echo The alignement file type is: $TYPE
+echo The output is: $output
 echo The prepare status is: $BUILD_FILES
 echo The GTF is: $GTF
 echo The non B-cell Gene list is: $NON_BCELL_CONTAMINATION_GENELIST
@@ -89,35 +101,9 @@ echo The File Cleanup setting is: $REMOVE_TEMP_FILES
 
 ##############################
 ##
-## Required Variables
+## CODE TO GENERATE NEEDED FILES FROM INPUT GTF FILE
 ##
 ##############################
-
-
-# Table for verbose tabulated results
-RESULTS_TABLE=purityChecker.txt
-
-
-
-# Set the path to the immunoglobulin loci GTF for the respective genome version
-#IG_LOCI_REGIONS=${BUILD_DIR}/Immunoglobulin_GRCh37_Loci.gtf
-#IG_LOCI_REGIONS=${BUILD_DIR}/Immunoglobulin_GRCh38_Loci.gtf
-
-# The geometric mean is calculated from the RPKM of the non-B cell contamination genes
-CALCULATE_GEOMEAN_R=${BUILD_DIR}/calculate_geomean.R
-
-# Two graphs will be automatically generated, this code is provided but the path needs to be updated
-IGH_GRAPH_R=${BUILD_DIR}/igh_graph.R
-
-# This is only used in the first run to build all the needed files
-#GTF=/home/tgenref/pecan/ensembl_v74/Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf
-
-
-
-## CODE TO GENERATE NEEDED FILES FROM INPUT GTF FILE ##
-
-#BUILD_FILES=No
-#BUILD_FILES=Yes
 
 if [ ${BUILD_FILES} == "Yes" ]
 then
@@ -161,15 +147,18 @@ then
 	exit 1
 fi
 
-## Developement (THIS MUST BE YES FOR DAY-2-DAY Usage, set to No in development to see temp files
-#REMOVE_TEMP_FILES=No
-#REMOVE_TEMP_FILES=Yes
 
 ####################################
 ##
 ##   Variables needed for each run
 ##
 ####################################
+
+# The geometric mean is calculated from the RPKM of the non-B cell contamination genes
+CALCULATE_GEOMEAN_R=${BUILD_DIR}/calculate_geomean.R
+
+# Two graphs will be automatically generated, this code is provided but the path needs to be updated
+IGH_GRAPH_R=${BUILD_DIR}/igh_graph.R
 
 # This is used to build and can be provided at command line but also in each run
 NON_BCELL_CONTAMINATION_GENELIST=${BUILD_DIR}/Non_Bcell_Contamination_GeneList_e98.txt
@@ -189,16 +178,22 @@ IG_GTF=${BUILD_DIR}/Immunoglobulin_RegionsToCount.gtf
 ##
 ####################################
 
+## If input file is a CRAM convert to a BAM
+if [ $TYPE = "CRAM" ]
+then
+  # FeatureCOunts requires a BAM file so CRAM inputs need to be converted to bam
+  # Determine the new BAM filename
+  TEMP_BAM=`basename ${INPUT_ALIGNMENT_FILE} ".cram"`
+  INPUT_BAM=${TEMP_BAM}.bam
+  echo Input changed from ${INPUT_ALIGNMENT_FILE} to ${INPUT_BAM}
+  samtools view -@ ${THREADS} -h -b -o ${INPUT_BAM} ${INPUT_ALIGNMENT_FILE}
+  samtools index -@ ${THREADS} ${INPUT_BAM}
+else
+  # reset BAM variable to expected
+  INPUT_BAM=${INPUT_ALIGNMENT_FILE}
+fi
 
-#    echo "Decompressing: ${CRAM} -> ${BAM}"
-
-#    samtools view -@ 10 -h -b -o "${BAM}" "${CRAM}"
-#    samtools index -@ 10 "${BAM}"
-
-for INPUT_BAM in `ls *.bam`
-do
-
-# Get the filename base
+## Get the filename base for output filenames
 FILENAME=`basename ${INPUT_BAM} ".bam"`
 
 # Detect if a *.bam.bai file exists, if not determine if you need a symbolic link to an existing *.bai or if you need to create one as samtools idxstats and bedtools multicov requires and index
@@ -215,11 +210,12 @@ else
 	else
 		#No Index exists in folder, make a new one with samtools
 		echo No index found, creating an index with samtools
-		samtools index ${INPUT_BAM}
+		samtools index -@ ${THREADS} ${INPUT_BAM}
 	fi
 fi
 
 # Get total read count
+echo Running samtools idxstats
 TOTAL_READ_COUNT=`samtools idxstats ${INPUT_BAM} | grep -v "*" | awk '{sum+=$3} END {print sum}'`
 echo "Total Reads = ${TOTAL_READ_COUNT}"
 
@@ -339,18 +335,6 @@ echo Launching R
 R <${IGH_GRAPH_R} --no-save
 echo Finished R
 
-
-# Record results to table
-#Determine if table exists or not
-if [ -e ${RESULTS_TABLE} ]
-then
-	echo Results Table Exists
-else
-	echo Results Table Does Not Exist, It will be created
-	echo -e Sample"\t"PrimaryIgHC"\t"PrimaryIgHC_Freq"\t"SecondaryIgHC"\t"DeltaIgHC"\t"PrimaryIgHV"\t"PrimaryIgHV_Freq"\t"SecondaryIgHV"\t"DeltaIgHV"\t"PrimaryIgLC"\t"PrimaryIgLC_Freq"\t"SecondaryIgLC"\t"DeltaIgLC"\t"PrimaryIgLV"\t"PrimaryIgLV_Freq"\t"SecondaryIgLV"\t"DeltaIgLV"\t"TOTAL_IGHC_READS"\t"TOTAL_IGHV_READS"\t"TOTAL_IGKC_READS"\t"TOTAL_IGKV_READS"\t"TOTAL_IGLC_READS"\t"TOTAL_IGLV_READS"\t"TOTAL_IGH"\t"TOTAL_IGK"\t"TOTAL_IGL"\t"TOTAL_IG"\t"PERCENT_IG"\t"TOTAL_LIGHT_CHAIN"\t"TOTAL_LIGHT_VARIABLE"\t"TOTAL_LIGHT_CONSTANT"\t"PERCENT_KAPPA"\t"PERCENT_LAMBDA"\t"Top1"\t"Top2"\t"Mean_Top_Delta"\t"NonB_Contamination > ${RESULTS_TABLE}
-
-fi
-
 #Calculate Results and Add to table
 PrimaryIgHC=`sort -nrk3 temp_IgHC_Calculation.txt | head -n1 | cut -f1`
 PrimaryIgHC_Freq=`sort -nrk3 temp_IgHC_Calculation.txt | head -n1 | cut -f3`
@@ -390,9 +374,6 @@ Top1_Delta=`sort -nrk1 Top.txt | head -n1 | cut -f2`
 Top2_Delta=`sort -nrk1 Top.txt | head -n2 | tail -n1 | cut -f2`
 Mean_Top_Delta=`echo " scale=5 ; (${Top1_Delta}+${Top2_Delta})/2" | bc`
 
-# Write data to summary table
-echo -e ${FILENAME}"\t"$PrimaryIgHC"\t"$PrimaryIgHC_Freq"\t"$SecondaryIgHC"\t"$DeltaIgHC"\t"$PrimaryIgHV"\t"$PrimaryIgHV_Freq"\t"$SecondaryIgHV"\t"$DeltaIgHV"\t"$PrimaryIgLC"\t"$PrimaryIgLC_Freq"\t"$SecondaryIgLC"\t"$DeltaIgLC"\t"$PrimaryIgLV"\t"$PrimaryIgLV_Freq"\t"$SecondaryIgLV"\t"$DeltaIgLV"\t"$TOTAL_IGHC_READS"\t"$TOTAL_IGHV_READS"\t"$TOTAL_IGKC_READS"\t"$TOTAL_IGKV_READS"\t"$TOTAL_IGLC_READS"\t"$TOTAL_IGLV_READS"\t"$TOTAL_IGH"\t"$TOTAL_IGK"\t"$TOTAL_IGL"\t"$TOTAL_IG"\t"$PERCENT_IG"\t"$TOTAL_LIGHT_CHAIN"\t"$TOTAL_LIGHT_VARIABLE"\t"$TOTAL_LIGHT_CONSTANT"\t"$PERCENT_KAPPA"\t"$PERCENT_LAMBDA"\t"$Top1"\t"$Top2"\t"$Mean_Top_Delta"\t"$GEOMEAN >> ${RESULTS_TABLE}
-
 # Write data to local file
 echo -e Sample"\t"PrimaryIgHC"\t"PrimaryIgHC_Freq"\t"SecondaryIgHC"\t"DeltaIgHC"\t"PrimaryIgHV"\t"PrimaryIgHV_Freq"\t"SecondaryIgHV"\t"DeltaIgHV"\t"PrimaryIgLC"\t"PrimaryIgLC_Freq"\t"SecondaryIgLC"\t"DeltaIgLC"\t"PrimaryIgLV"\t"PrimaryIgLV_Freq"\t"SecondaryIgLV"\t"DeltaIgLV"\t"TOTAL_IGHC_READS"\t"TOTAL_IGHV_READS"\t"TOTAL_IGKC_READS"\t"TOTAL_IGKV_READS"\t"TOTAL_IGLC_READS"\t"TOTAL_IGLV_READS"\t"TOTAL_IGH"\t"TOTAL_IGK"\t"TOTAL_IGL"\t"TOTAL_IG"\t"PERCENT_IG"\t"TOTAL_LIGHT_CHAIN"\t"TOTAL_LIGHT_VARIABLE"\t"TOTAL_LIGHT_CONSTANT"\t"PERCENT_KAPPA"\t"PERCENT_LAMBDA"\t"Top1"\t"Top2"\t"Mean_Top_Delta"\t"NonB_Contamination > ${FILENAME}.purityResults.txt
 echo -e ${FILENAME}"\t"$PrimaryIgHC"\t"$PrimaryIgHC_Freq"\t"$SecondaryIgHC"\t"$DeltaIgHC"\t"$PrimaryIgHV"\t"$PrimaryIgHV_Freq"\t"$SecondaryIgHV"\t"$DeltaIgHV"\t"$PrimaryIgLC"\t"$PrimaryIgLC_Freq"\t"$SecondaryIgLC"\t"$DeltaIgLC"\t"$PrimaryIgLV"\t"$PrimaryIgLV_Freq"\t"$SecondaryIgLV"\t"$DeltaIgLV"\t"$TOTAL_IGHC_READS"\t"$TOTAL_IGHV_READS"\t"$TOTAL_IGKC_READS"\t"$TOTAL_IGKV_READS"\t"$TOTAL_IGLC_READS"\t"$TOTAL_IGLV_READS"\t"$TOTAL_IGH"\t"$TOTAL_IGK"\t"$TOTAL_IGL"\t"$TOTAL_IG"\t"$PERCENT_IG"\t"$TOTAL_LIGHT_CHAIN"\t"$TOTAL_LIGHT_VARIABLE"\t"$TOTAL_LIGHT_CONSTANT"\t"$PERCENT_KAPPA"\t"$PERCENT_LAMBDA"\t"$Top1"\t"$Top2"\t"$Mean_Top_Delta"\t"$GEOMEAN >> ${FILENAME}.purityResults.txt
@@ -426,10 +407,14 @@ then
 	rm Top.txt
 	rm NonBcell_Contamination_Counts.txt
 	rm geomean.txt
+	if [ $TYPE = "CRAM" ]
+  then
+    # Remove the temp BAM file and index .bai file
+    rm ${INPUT_BAM}
+    rm ${INPUT_BAM}.bai
+  fi
 fi
+
+# Rename output files
 mv IGH.png ${FILENAME}_IgH.png
 mv IGL.png ${FILENAME}_IgL.png
-
-# Record results to table
-
-done
