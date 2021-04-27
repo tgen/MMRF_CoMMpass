@@ -21,7 +21,6 @@ BUILD_DIR=`dirname ${SCRIPT_PATH}`
 echo
 echo "---------------------------------------"
 echo
-echo BUILD DIRECTORY = ${BUILD_DIR}
 
 ##############################
 ##
@@ -45,17 +44,24 @@ usage()
   # `cat << EOF` This means that cat should stop reading when EOF is detected
   cat << EOF
 
-  Usage: $0 [ -bph options]
+  Usage: $0 [ options ]
+
   -h      Display Help
+
+  Required for Sample Calculations
   -t      Threads to use [1]
-  -b      Inpute RNAseq file from STAR alignment
+  -b      Input RNAseq file from STAR alignment
   -a      File type (BAM/CRAM) [BAM] - CRAM will be converted to BAM on the fly
-  -o      Output Path
+  -w      Workflow (Jetstream/Other) [Jetstream] - workflow type controls final location of outputs (./stats vs Current Directory)
+  -r      Resource Directory [defaults to executable path]
+  -d      Cleanup Temp files (Yes/No) [Yes] - Set to "No" to debug
+
+  Required to Build Needed Resource Files
   -p      Prepare Resource Files (Yes/No) [No]
   -g      Input GTF (only needed to prepare resource files)
   -l      List of Genes not expressed in B-cells (only needed to prepare resource files)
   -i      Immunoglobulin Loci in GTF format (only needed to prepare resource files)
-  -d      Cleanup Temp files (Yes/No) [Yes] - Set to "no" to debug
+
 
 EOF
 # EOF is found above and hence cat command stops reading. This is equivalent to echo but much neater when printing out.
@@ -65,6 +71,7 @@ EOF
 ## Assign default values
 THREADS=1
 TYPE=BAM
+WORKFLOW=Jetstream
 BUILD_FILES=No
 GTF=NA
 NON_BCELL_CONTAMINATION_GENELIST=NA
@@ -72,13 +79,14 @@ IG_LOCI_REGIONS=NA
 REMOVE_TEMP_FILES=Yes
 
 ## Capture and assign variables from inputs
-while getopts 't:b:a:o:p:g:l:i:d:?h' flag
+while getopts 't:b:a:w:r:p:g:l:i:d:?h' flag
 do
     case ${flag} in
         t) THREADS=${OPTARG};;
         b) INPUT_ALIGNMENT_FILE=${OPTARG};;
         a) TYPE=${OPTARG};;
-        o) output=${OPTARG};;
+        w) WORKFLOW=${OPTARG};;
+        r) BUILD_DIR=${OPTARG};;
         p) BUILD_FILES=${OPTARG};;
         g) GTF=${OPTARG};;
         l) NON_BCELL_CONTAMINATION_GENELIST=${OPTARG};;
@@ -90,15 +98,17 @@ done
 
 ## Send variable information to log
 echo The assinged thread number is: $THREADS
-echo The Alignemnet filename is: $INPUT_ALIGNMENT_FILE
+echo The alignemnet filename is: $INPUT_ALIGNMENT_FILE
 echo The alignement file type is: $TYPE
-echo The output is: $output
-echo The prepare status is: $BUILD_FILES
+echo The workflow source is: $WORKFLOW
+echo The resource file path is: ${BUILD_DIR}
+echo The prepare resources status is: $BUILD_FILES
 echo The GTF is: $GTF
 echo The non B-cell Gene list is: $NON_BCELL_CONTAMINATION_GENELIST
-echo The Immunoglobulin loci file is: $IG_LOCI_REGIONS
-echo The File Cleanup setting is: $REMOVE_TEMP_FILES
+echo The immunoglobulin loci file is: $IG_LOCI_REGIONS
+echo The file cleanup setting is: $REMOVE_TEMP_FILES
 
+exit 1
 ##############################
 ##
 ## CODE TO GENERATE NEEDED FILES FROM INPUT GTF FILE
@@ -147,7 +157,6 @@ then
 	exit 1
 fi
 
-
 ####################################
 ##
 ##   Variables needed for each run
@@ -186,7 +195,11 @@ then
   TEMP_BAM=`basename ${INPUT_ALIGNMENT_FILE} ".cram"`
   INPUT_BAM=${TEMP_BAM}.bam
   echo Input changed from ${INPUT_ALIGNMENT_FILE} to ${INPUT_BAM}
+  echo Converting CRAM to BAM for featureCounts compatibility
+  date '+%m/%d/%y %H:%M:%S'
   samtools view -@ ${THREADS} -h -b -o ${INPUT_BAM} ${INPUT_ALIGNMENT_FILE}
+  echo Creating BAM index file
+  date '+%m/%d/%y %H:%M:%S'
   samtools index -@ ${THREADS} ${INPUT_BAM}
 else
   # reset BAM variable to expected
@@ -232,7 +245,7 @@ echo "Total Reads = ${TOTAL_READ_COUNT}"
 
 echo Starting Feature Counts
 date '+%m/%d/%y %H:%M:%S'
-featureCounts -g gene_name -O -s 0 -Q 10 -T 8 -C -a ${IG_GTF} -o temp_featureCounts_Counts.txt ${INPUT_BAM}
+featureCounts -g gene_name -O -s 0 -Q 10 -T ${THREADS} -C -a ${IG_GTF} -o temp_featureCounts_Counts.txt ${INPUT_BAM}
 date '+%m/%d/%y %H:%M:%S'
 echo Finished Coverage Analysis
 
@@ -407,7 +420,7 @@ then
 	rm Top.txt
 	rm NonBcell_Contamination_Counts.txt
 	rm geomean.txt
-	if [ $TYPE = "CRAM" ]
+	if [ $TYPE == "CRAM" ]
   then
     # Remove the temp BAM file and index .bai file
     rm ${INPUT_BAM}
@@ -416,5 +429,20 @@ then
 fi
 
 # Rename output files
-mv IGH.png ${FILENAME}_IgH.png
-mv IGL.png ${FILENAME}_IgL.png
+mv IGH.png ${FILENAME}.purityResults.IgH.png
+mv IGL.png ${FILENAME}.purityResults.IgL.png
+
+# Move outputs to the stats folder (Assumes Jetsteam workflow)
+if [ $WORKFLOW == "Jetstream" ]
+then
+  mv ${FILENAME}.purityResults.txt stats/
+  mv ${FILENAME}.purityResults.IgH.png stats/
+  mv ${FILENAME}.purityResults.IgL.png stats/
+fi
+
+# Done all steps
+echo
+echo Finished all steps
+echo
+
+exit 0
