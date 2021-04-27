@@ -13,7 +13,7 @@ do
   do
     echo
     echo "Calculating results for: $sample"
-    cd sample
+    cd $sample
     # Call purity checker script
     /home/jkeats/git_repositories/MMRF_CoMMpass/myeloma_purityCalculator_RNAseq/purityChecker_GRCh38_e98.sh \
       -t 10 \
