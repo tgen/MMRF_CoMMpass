@@ -108,7 +108,6 @@ echo The non B-cell Gene list is: $NON_BCELL_CONTAMINATION_GENELIST
 echo The immunoglobulin loci file is: $IG_LOCI_REGIONS
 echo The file cleanup setting is: $REMOVE_TEMP_FILES
 
-exit 1
 ##############################
 ##
 ## CODE TO GENERATE NEEDED FILES FROM INPUT GTF FILE
