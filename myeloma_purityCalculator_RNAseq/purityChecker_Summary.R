@@ -1,7 +1,7 @@
 library(tidyverse)
 
 # Read in datafile
-purity <- read_tsv("Test.puritySummary.txt")
+purity <- read_tsv("CLARION.puritySummary.txt")
 purity <- read_tsv("purityChecker.txt")
 
 
@@ -9,7 +9,7 @@ purity <- read_tsv("purityChecker.txt")
 ggplot(purity, aes(Sample, Top1, ymin = Top2, ymax = Top1, fill = Mean_Top_Delta)) +
   geom_crossbar(stat='identity', linetype='blank', width=0.75) +
   geom_hline(aes(yintercept=0.9), colour="blue", linetype="dashed") +
-  xlab(label="Samples Tested") +
+  scale_x_discrete(name="Samples Tested") +
   scale_y_continuous(name = "Top Two Isoform Range",
                      limits=c(0,1),
                      breaks=seq(0, 1, 0.1)) +
@@ -17,7 +17,7 @@ ggplot(purity, aes(Sample, Top1, ymin = Top2, ymax = Top1, fill = Mean_Top_Delta
                        low="blue", mid = "yellow", high="red",
                        limits=c(0.0,1.0),
                        midpoint = 0.5) + 
-  theme(axis.text.x = element_text(angle=90,hjust = 0.9,vjust=0.5),
+  theme(axis.text.x=element_blank(),
         axis.title = element_text(size=16, vjust=0.4))
 
 # Plot XY results
@@ -40,6 +40,9 @@ ggplot(purity, aes(PrimaryIgLC_Freq, PrimaryIgLV_Freq, color=NonB_Contamination)
 ggplot(purity, aes(NonB_Contamination)) + 
   geom_histogram(binwidth = 0.2)
 
+mean(purity$NonB_Contamination)
+sd(purity$NonB_Contamination)
+median(purity$NonB_Contamination)
 quantile(purity$NonB_Contamination,0.9)
 quantile(purity$NonB_Contamination,0.95)
 quantile(purity$NonB_Contamination,0.99)
