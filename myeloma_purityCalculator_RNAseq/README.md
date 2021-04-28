@@ -1,7 +1,7 @@
 # RNAseq Based Myeloma Purity Calculator
 ----
 
-This is designed to determine if an RNAseq result bam file contains a pure monoclonal B cell population
+This is designed to determine if an RNAseq alignment file contains a pure monoclonal B cell population
 
 ### REQUIREMENTS
 
@@ -17,22 +17,47 @@ This is designed to determine if an RNAseq result bam file contains a pure monoc
 
 ### Usage
 
-* Ensure all variables at the top of the script have the path variables set correctly
-  * RESULTS_TABLE=/YourPath/purityChecker_tabulatedResults.txt
-  * BUILD_DIR=/YourPath/MMRF_CoMMpass/myelomaPurityChecker/
-    * This is the folder where we expect a number of files to limit the number of required pointer variables
-* On the first run you must create a number of needed files
-  * To do this you must have a GTF file, use the related package to create the MMRF specific reference genome and GTF
-  * Then set the build variable to create the needed files and ensure you point to the correct GTF
-    * BUILD_FILES=Yes
-    * GTF=/YourPath/Homo_sapiens.GRCh37.74.gtf.hs37d5.EGFRvIII.gtf
-* To test a sample the script must be called in a directory with a RNAseq BAM file (This should be aligner agnastic)
-  * Make sure the build variable is unset to ensure the required files are not created again
-    * BUILD_FILES=No
-  * Make sure the loop function search parameter is looking for the proper file extension matching your BAM files
-    * for INPUT_BAM in `ls *.starAligned.final.bam`
-    * REPLACE .starAligned.final.bam with the string that matches the ending of your BAM files
-* The script will loop over in serial all bam files in the folder.  At TGen we submit each bam as independent jobs on our cluster but this is designed as a stand alone that should work in any enviroment.
+```
+  Usage: purityChecker_GRCh38_e98.sh [ options ]
+
+  -h      Display Help
+
+  Required for Sample Calculations  
+  -t      Threads to use [1]  
+  -b      Input RNAseq file from STAR alignment  
+  -a      File type (BAM/CRAM) [BAM] - CRAM will be converted to BAM on the fly  
+  -w      Workflow (Jetstream/Other) [Jetstream] - workflow type controls final location of outputs (./stats vs Current Directory)  
+  -r      Resource Directory [defaults to executable path]  
+  -d      Cleanup Temp files (Yes/No) [Yes] - Set to "No" to debug  
+
+  Required to Build Needed Resource Files  
+  -p      Prepare Resource Files (Yes/No) [No]  
+  -g      Input GTF (only needed to prepare resource files)  
+  -l      List of Genes not expressed in B-cells (only needed to prepare resource files)  
+  -i      Immunoglobulin Loci in GTF format (only needed to prepare resource files)  
+```  
+
+#### Before the first run you must create a number of needed files
+To do this you must have a GTF file (tested with ensembl v98 from JetStream Resources - Phoenix)
+```
+purityChecker_GRCh38_e98.sh -r /my/output/directory \
+    -p Yes \
+    -g geneModel.gtf \
+    -l Non-Bcell_Contamination_GeneList_e98.txt \
+    -i Immunoglobulin_GRCh38_Loci.gtf
+```
+
+#### For each RNAseq alignment file
+``` 
+purityChecker_GRCh38_e98.sh -t 10 \
+    -b MySample_RNAseq_Alignment.bam \
+    -a BAM \
+    -w Other \
+    -r /my/output/directory \
+    -d Yes 
+```
+* CRAM files can be used as inputs but they are converted to a BAM on the fly as featureCounts cannot read a CRAM today
+  * After generating the results the temp BAM file is deleted if the cleanup mode is set to "Yes"
 
 ### Concept
 
@@ -62,20 +87,7 @@ IgL loci showing a poly-clonal represenation and the near-normal expectation of 
 
 ### Notes
 
-All other required files for GRCh37 are provided but you can build the required annotation files by changing the BUILD_FILES flag to "YES"
-
-Currently, the script will process all .bam files in a folder from which the script is called
-
 This script will process a bam file approximately every 5 minutes
 
-If you need to graph the summary table you can use the following code in R (we highly recommend using R studio)
-
-From the Command line
-cd Folder_With_Tabulated_File
-R
-> library(ggplot2)
-> Tab2<-read.table("Tabulated_File.txt", header=T)
-> ggplot(Tab2, aes(Sample, Top1, ymin = Top2, ymax = Top1, fill = Mean_Top_Delta)) + geom_crossbar(stat='identity', linetype='blank', width=0.75) + xlab(label="Samples Tested") + ylab(label="Top Two Isoform Range") + theme(axis.text.x = element_text(angle=90,hjust = 0.9,vjust=0.5), axis.title = element_text(size=16, vjust=0.4)) + scale_y_continuous(limits=c(0,1), breaks=seq(0, 1, 0.1)) + scale_fill_gradient2("Mean\nInter\nIsoform\nDelta", low="blue", mid = "yellow", high="red", limits=c(0.0,1.0), midpoint = 0.5) + geom_hline(aes(yintercept=0.9), colour="blue", linetype="dashed")
-> ggsave("PurityCheckerV2.png")
-> q()
+To summarize results into a table use `purityChecker_Summary.sh` and to graph the results `purityChecker_Summary.R`
 
