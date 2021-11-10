@@ -13,3 +13,5 @@ chr4    1339067 2334901 Vysis_LSI_FGFR3_Estimated   1000    +   1339067 2334901 
 chr11   68833341    69775341    Vysis_LSI_CCND1_XT_Estimated    1000    +   68833341    69775341    255,165,0
 chr16   77158314    77508314    Vysis_LSI_MAF_Centromeric_Estimated 1000    +   77158314    77508314 255,165,0
 chr16   79708314    80054421    Vysis_LSI_MAF_Telomeric_Estimated 1000    +   79708314    80054421 255,165,0
+chr14   105163756   105445756   Vysis_LSI_IGH_BAP_Centromeric_CH_Estimated  1000    +   105163756   105445756   255,165,0
+chr14   105939756   106875071   Vysis_LSI_IGH_BAP_Telomeric_VH_Estimated    1000    +   105939756   106875071   0,128,0
