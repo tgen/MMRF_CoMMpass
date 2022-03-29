@@ -1,6 +1,5 @@
-Obs	MMTX_THERAPY	medtreatsh	NameToUse	CodeName	ChemicalName	USTradeName	CollapsedTargetGroup	CollapsedMechanism	new_shnm	Remove from treatment list?
-2	ABBV-838	ABBV-838	Azintuxizumab vedotin	 	"Azintuxizumab
-vedotin"	 	SLAMF7	Antibody	Azin	
+Obs	MMTX_THERAPY	medtreatsh	NameToUse	CodeName	ChemicalName	USTradeName	CollapsedTargetGroup	CollapsedMechanism	new_shnm	Remove_from_treatment_list
+2	ABBV-838	ABBV-838	Azintuxizumab vedotin	 	Azintuxizumab vedotin	 	SLAMF7	Antibody	Azin	
 3	ACP-196	Aca	Acalabrutinib	 	Acalabrutinib	Calquence	BTK	Kinase Inhibitor	Aca	
 4	ACY-1215	Roc	Ricolinostat	ACY-1215	Ricolinostat	 	HDAC	HDAC	Roc	
 5	ACY-241	ACY-241	Citarinostat	ACY-241	Citarinostat	 	HDAC	HDAC	Cita	
@@ -8,45 +7,34 @@ vedotin"	 	SLAMF7	Antibody	Azin
 7	ALEMTUZUMAB	ALEMTUZUMAB	Alemtuzumab	 	Alemtuzumab	Campath	CD52	Antibody	Alem	
 8	ALKERAN	Mel	Melphalan	 	Melphalan	Alkeran	Chemotherapy	Chemotherapy	Mel	
 9	AO-176	AO-176	AO-176	AO-176	 	 	CD47	Antibody	AO-176	
-10	ATEZOLIZUMAB	ATEZOLIZUMAB	Atezolizumab	"MPDL3280A,
-RG7446"	Atezolizumab	Tecentriq	Checkpoint Inhibitor	Antibody	Atez	
+10	ATEZOLIZUMAB	ATEZOLIZUMAB	Atezolizumab	"MPDL3280A, RG7446"	Atezolizumab	Tecentriq	Checkpoint Inhibitor	Antibody	Atez	
 11	B2121	CAR T	Idecabtagene cicleucel	bb2121	Idecabtagene cicleucel	 	BCMA	CAR-T	Ide-cel	
 12	BB2121	CAR T	Idecabtagene cicleucel	bb2121	Idecabtagene cicleucel	 	BCMA	CAR-T	Ide-cel	
 13	BCMA AB	BCMA AB	Anti-BCMA	 	 	 	BCMA	Antibody	Anti-BCMA	
 14	BCNU	BCNU	Carmustine	 	Carmustine	BCNU	Chemotherapy	Chemotherapy	Carm	
 15	BELANTAMAB	BELANTAMAB	Belantamab mafodotin	GSK2857916	Belantamab mafodotin	BLENREP	BCMA	Antibody	Bela	
-16	BELANTAMAB MAFODOTIN MONOTHERAPY	"BELANTAMAB
-MAFODOTIN
-M"	Belantamab mafodotin	GSK2857916	Belantamab mafodotin	BLENREP	BCMA	Antibody	Bela	
+16	BELANTAMAB MAFODOTIN MONOTHERAPY	BELANTAMAB MAFODOTIN M	Belantamab mafodotin	GSK2857916	Belantamab mafodotin	BLENREP	BCMA	Antibody	Bela	
 17	BELANTAMAB MAFODOTIN-BLMF	BELANTAMAB MAFODOTIN-B	Belantamab mafodotin	GSK2857916	Belantamab mafodotin	BLENREP	BCMA	Antibody	Bela	
 18	BENDAMUSTINE	Bend	Bendamustine	 	Bendamustine	BENDEKA	Chemotherapy	Chemotherapy	Bend	
 19	BIAXIN	Clar	Clarithromycin	 	Clarithromycin	Biazin	Antibiotic	Antibiotic	Clar	
-20	"BIAXIN (BIRD REGIMEN FOR A FEW MONTHS
-THEN RVD ONLY)"	"BIAXIN (BIRD REGIMEN
-F"	Clarithromycin	 	Clarithromycin	Biazin	Antibiotic	Antibiotic	Clar	
+20	BIAXIN (BIRD REGIMEN FOR A FEW MONTHS THEN RVD ONLY)	BIAXIN (BIRD REGIMEN F	Clarithromycin	 	Clarithromycin	Biazin	Antibiotic	Antibiotic	Clar	
 21	BISULFAN	BISULFAN	Busulfan	 	Busulfan	Myleran	Chemotherapy	Chemotherapy	Bus	
 22	BUSULFAN	Bus	Busulfan	 	Busulfan	Myleran	Chemotherapy	Chemotherapy	Bus	
 23	BUSULPHAN	Bus	Busulfan	 	Busulfan	Myleran	Chemotherapy	Chemotherapy	Bus	
 24	Bendamustine	Bend	Bendamustine	 	Bendamustine	BENDEKA	Chemotherapy	Chemotherapy	Bend	
 25	Bortezomib	Bor	Bortezomib	PS-341	Bortezomib	Velcade	Proteasome	Proteasome	Bor	
-26	CAR T CELLS	CAR T	"CAR-T Cells
-(Undefined)"	 	 	 	 	CAR-T	CAR-T	
-27	CAR-T	CAR T	"CAR-T Cells
-(Undefined)"	 	 	 	 	CAR-T	CAR-T	
-28	CAR-T CELL INFUSION	CAR-T CELL INFUSION	"CAR-T Cells
-(Undefined)"	 	 	 	 	CAR-T	CAR-T	
+26	CAR T CELLS	CAR T	CAR-T Cells (Undefined)	 	 	 	 	CAR-T	CAR-T	
+27	CAR-T	CAR T	CAR-T Cells (Undefined)	 	 	 	 	CAR-T	CAR-T	
+28	CAR-T CELL INFUSION	CAR-T CELL INFUSION	CAR-T Cells (Undefined)	 	 	 	 	CAR-T	CAR-T	
 29	CARMUSTINE	BCNU	Carmustine	 	Carmustine	BCNU	Chemotherapy	Chemotherapy	Carm	
 30	CB-5083	CB-5083	CB-5083	CB-5083	 	 	Other	Other	CB-5083	
 31	CB-839HCL	CB-839HCL	CB-839	CB-839	 	 	Other	Other	CB-839	
 32	CC-122	CC-122	Avadomide	CC-122	Avadomide	 	IMID	IMID	Avad	
-33	"CC-122 (PLEIOTROPIC PATHWAY MODIFIER
-ML-122)"	"CC-122 (PLEIOTROPIC
-PA"	Avadomide	CC-122	Avadomide	 	IMID	IMID	Avad	
+33	CC-122 (PLEIOTROPIC PATHWAY MODIFIER ML-122	CC-122 (PLEIOTROPIC PA	Avadomide	CC-122	Avadomide	 	IMID	IMID	Avad	
 34	CC-220	CC-220	Iberdomide	CC-220	Iberdomide	 	IMID	IMID	Iber	
 35	CC-90002	CC-90002	CC-90002	CC-90002	 	 	CD47	Antibody	CC-90002	
 36	CC-92480 (CC-92480-MM-001 STUDY)	CC-92480 (CC-92480-MM-	Mezigdomide	CC-92480	Mezigdomide	 	IMID	IMID	Mezi	
-37	CELGENE CC-122 -PLEIOTROPIC PATHWAY	"CELGENE CC-122
--PLEIOT"	Avadomide	CC-122	Avadomide	 	IMID	IMID	Avad	
+37	CELGENE CC-122 -PLEIOTROPIC PATHWAY	CELGENE CC-122-PLEIOT	Avadomide	CC-122	Avadomide	 	IMID	IMID	Avad	
 38	CISPLATIN	Cis	Cisplatin	 	Cisplatin	 	Chemotherapy	Chemotherapy	Cis	
 39	CISPLATIN (PLATINOL)	Cis	Cisplatin	 	Cisplatin	 	Chemotherapy	Chemotherapy	Cis	
 40	CISPLATINE	Cis	Cisplatin	 	Cisplatin	 	Chemotherapy	Chemotherapy	Cis	
@@ -87,17 +75,14 @@ PA"	Avadomide	CC-122	Avadomide	 	IMID	IMID	Avad
 75	IBRUTINIB	Ibu	Ibrutinib	 	Ibrutinib	Imbruvica	BTK	Kinase Inhibitor	Ibru	
 76	IDASANUTLIN	IDASANUTLIN	Idasanutlin	 	Idasanutlin	 	MDM2	Other	Ida	
 77	INVESTIGATIONAL ANTI-TIGIT	INVESTIGATIONAL ANTI-T	anti-TIGIT	 	 	 	Checkpoint Inhibitor	Antibody	 	
-78	INVESTIGATIONAL PRODUCT	[INV]	"Investigational
-Product"	 	 	 	 	 	 	
-79	IPILIMUMAB	IPILIMUMAB	Ipilimumab	"MDX-010
-(BMS-734016)"	Ipilimumab	Yervoy	Checkpoint Inhibitor	Antibody	Ipi	
+78	INVESTIGATIONAL PRODUCT	[INV]	Investigational Product							
+79	IPILIMUMAB	IPILIMUMAB	Ipilimumab	MDX-010 (BMS-734016)	Ipilimumab	Yervoy	Checkpoint Inhibitor	Antibody	Ipi	
 80	ISATUXIMAB	ISATUXIMAB	Isatuximab	SAR650984	Isatuximab	Sarclisa	CD38	Antibody	Isa	
 81	IXAZOMIB	Ixa	Ixazomib	MLN9708	Ixazomib	Ninlaro	Proteasome	Proteasome	Ixa	
 82	IXAZOMIB VS PLACEBO	[INV]	Ixazomib	MLN9708	Ixazomib	Ninlaro	Proteasome	Proteasome	Ixa	
 83	Ixazomib	Ixa	Ixazomib	MLN9708	Ixazomib	Ninlaro	Proteasome	Proteasome	Ixa	
-84	JNJ-64407564	JNJ-64407564	JNJ-64407564	JNJ-64407564	 	 	GPRC5D	BiTE	JNJ-64407564	
-85	KPT-330	Sel	Selinexor	KPT-330	Selinexor	Xpovio	XPO1	"Nuclear Export
-Inhibitor"	Sel	
+84	JNJ-64407564	JNJ-64407564	Talquetamab	JNJ-64407564	Talquetamab	 	GPRC5D	BiTE	Talq	
+85	KPT-330	Sel	Selinexor	KPT-330	Selinexor	Xpovio	XPO1	Nuclear Export Inhibitor	Sel	
 86	LEUKAPHERESIS	LEUKAPHERESIS	Leukapheresis	 	 	 	 	 	Leuk	
 87	Lenalidomide	Len	Lenalidomide	CC-5013	Lenalidomide	Revlimid	IMID	IMID	Len	
 88	Liposomal doxorubicin	Dox(lip.)	Doxorubicin	 	Doxorubicin	Adriamycin	Chemotherapy	Chemotherapy	Dox	
@@ -115,12 +100,11 @@ Inhibitor"	Sel
 100	METRO28	METRO28	METRO28	 	 	 	 	 	METRO28	
 101	MLN9708	MLN9708	Ixazomib	MLN9708	Ixazomib	Ninlaro	Proteasome	Proteasome	Ixa	
 102	MLN9708 VS PLACEBO	MLN9708 VS PLACEBO	Ixazomib	MLN9708	Ixazomib	Ninlaro	Proteasome	Proteasome	Ixa	
-103	MOBOZIL	[supp. Plerixafor]	Plerixafor	 	Plerixafor	Mozobil	 	 	Pler	
-104	MOZOBIL	[supp. Plerixafor]	Plerixafor	 	Plerixafor	Mozobil	 	 	Pler	
+103	MOBOZIL	[supp. Plerixafor]	Plerixafor	 	Plerixafor	Mozobil	 	 	Pler	Y
+104	MOZOBIL	[supp. Plerixafor]	Plerixafor	 	Plerixafor	Mozobil	 	 	Pler	Y
 105	Melphalan	Mel	Melphalan	 	Melphalan	Alkeran	Chemotherapy	Chemotherapy	Mel	
 106	NELFINAVIR	NELFINAVIR	Nelfinavir Mesylate	 	Nelfinavir Mesylate	Viracept	 	 	Nel	
-107	NELFINAVIR (VIRACEPT)	"NELFINAVIR
-(VIRACEPT)"	Nelfinavir Mesylate	 	Nelfinavir Mesylate	Viracept	 	 	Nel	
+107	NELFINAVIR (VIRACEPT)	NELFINAVIR (VIRACEPT)	Nelfinavir Mesylate	 	Nelfinavir Mesylate	Viracept	 	 	Nel	
 108	NINLARO	Ixa	Ixazomib	MLN9708	Ixazomib	Ninlaro	Proteasome	Proteasome	Ixa	
 109	NIVOLUMAB	Niv	Nivolumab	BMS-936558	Nivolumab	Optivo	Checkpoint Inhibitor	Antibody	Niv	
 110	ONC 201	ONC 201	ONC201	ONC201	 	 	Other	Other	ONC201	
@@ -128,17 +112,14 @@ Inhibitor"	Sel
 112	PANIBINOSTAT	Pano	Panobinostat	LBH-589	Panobinostat	Farydak	HDAC	HDAC	Pano	
 113	PANOBINOSTAT	Pano	Panobinostat	LBH-589	Panobinostat	Farydak	HDAC	HDAC	Pano	
 114	PEMBROLIZUMAB	Pemb	Pembrolizumab	lambrolizumab	Pembrolizumab	KEYTRUDA	Checkpoint Inhibitor	Antibody	Pemb	
-115	PEMBROLIZUMAB (KEYTRUDA)	"PEMBROLIZUMAB
-(KEYTRUD"	Pembrolizumab	lambrolizumab	Pembrolizumab	KEYTRUDA	Checkpoint Inhibitor	Antibody	Pemb	
-116	PLERIXAFOR	[supp. Plerixafor]	Plerixafor	 	Plerixafor	Mozobil	 	 	Pler	
+115	PEMBROLIZUMAB (KEYTRUDA)	PEMBROLIZUMAB (KEYTRUD	Pembrolizumab	lambrolizumab	Pembrolizumab	KEYTRUDA	Checkpoint Inhibitor	Antibody	Pemb	
+116	PLERIXAFOR	[supp. Plerixafor]	Plerixafor	 	Plerixafor	Mozobil	 	 	Pler	Y
 117	POMALIDOMIDE	Pom	Pomalidomide	CC-4047	Pomalidomide	POMALYST	IMID	IMID	Pom	
 118	PREDNISONE	Pred	Prednisone	 	Prednisone	 	Steroid	Steroid	Pred	
 119	Panobinostat	Pano	Panobinostat	LBH-589	Panobinostat	Farydak	HDAC	HDAC	Pano	
 120	Pomalidomide	Pom	Pomalidomide	CC-4047	Pomalidomide	POMALYST	IMID	IMID	Pom	
 121	Prednisone	Pred	Prednisone	 	Prednisone	 	Steroid	Steroid	Pred	
-122	"RANDOMIZED MILS TRIAL, J1343 (NO MILS
-ARM)"	"RANDOMIZED MILS
-TRIAL,"	 	 	 	 	 	 	 	
+122	"RANDOMIZED MILS TRIAL, J1343 (NO MILS ARM)"	RANDOMIZED MILS TRIAL								
 123	RECMAGE VACCINE	Recmage vaccine	MAGE-A3	 	MAGE-A3	 	Vaccine	Vaccine	MAGE-A3	
 124	REGN5458	REGN5458	REGN5458	REGN5458	 	 	BCMA	BiTE	REGN5458	
 125	REGN5458 (BCMA X CD3)	REGN5458 (BCMA X CD3)	REGN5458	REGN5458	 	 	BCMA	BiTE	REGN5458	
@@ -146,20 +127,16 @@ TRIAL,"
 127	REVLIMID	REVLIMID	Lenalidomide	CC-5013	Lenalidomide	Revlimid	IMID	IMID	Len	
 128	RITUXAN	Rit	Rituximab	 	Rituximab	Rituxan	CD20	Antibody	Rit	
 129	SAR650984	SAR650984	Isatuximab	SAR650984	Isatuximab	Sarclisa	CD38	Antibody	Isa	
-130	SAR650984 ISATUXIMAB	"SAR650984
-ISATUXIMAB"	Isatuximab	SAR650984	Isatuximab	Sarclisa	CD38	Antibody	Isa	
+130	SAR650984 ISATUXIMAB	SAR650984 ISATUXIMAB	Isatuximab	SAR650984	Isatuximab	Sarclisa	CD38	Antibody	Isa	
 131	SEA-BCMA	SEA-BCMA	SEA-BCMA	SEA-BCMA	 	 	BCMA	Antibody	SEA-BCMA	
-132	SELINEXOR	Sel	Selinexor	KPT-330	Selinexor	Xpovio	XPO1	"Nuclear Export
-Inhibitor"	Sel	
-133	SELINEXOR (KPT-330)	SELINEXOR (KPT-330)	Selinexor	KPT-330	Selinexor	Xpovio	XPO1	"Nuclear Export
-Inhibitor"	Sel	
+132	SELINEXOR	Sel	Selinexor	KPT-330	Selinexor	Xpovio	XPO1	Nuclear Export Inhibitor	Sel	
+133	SELINEXOR (KPT-330)	SELINEXOR (KPT-330)	Selinexor	KPT-330	Selinexor	Xpovio	XPO1	Nuclear Export Inhibitor	Sel	
 134	SOLUMEDROL	SOLUMEDROL	Methylprednisolone	 	Methylprednisolone	Solu-Medrol	Steroid	Steroid	Mep	
 135	STRO-001	STRO-001	STRO-001	STRO-001	 	 	CD74	Antibody	STRO-001	
 136	TAK-079	TAK-079	TAK-079	TAK-079	 	 	CD38	Antibody	TAK-079	
 137	TAK-573-1501	TAK-573-1501	TAK-573	TAK-573	 	 	CD38	Antibody	TAK-573	
 138	TAS4464	TAS4464	TAS4464	TAS4464	 	 	Other	Other	TAS4464	
-139	TH1 CELL INFUSION	[TH1 cell infusion]	TH1 Cell Infusion	 	 	 	 	 	"TH1 Cell
-Infusion"	
+139	TH1 CELL INFUSION	[TH1 cell infusion]	TH1 Cell Infusion	 	 	 	 	 	TH1 Cell Infusion	
 140	TRAMETINIB	TRAMETINIB	Trametinib	GSK1120212	Trametinib	Mekinist	MEK	Kinase Inhibitor	Tram	
 141	TRASTUZUMAB	TRASTUZUMAB	Trastuzumab	 	Trastuzumab	Herceptin	 	 	Tras	Y
 142	TURMERIC	[supp. Turmeric]	Turmeric	 	 	 	 	 	Tumeric	Y
