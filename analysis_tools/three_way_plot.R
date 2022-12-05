@@ -98,9 +98,9 @@ if (opt$rdata_object == "SAVE") {
   print("Reading QC data File...")
   qc_data <- read_tsv(opt$qc_table, guess_max = 10000)
   qc_data <- qc_data %>% 
-    rename("Patient_ID" = `Patients::KBase_Patient_ID`,
-           "Study_Visit_ID" = `Visits::Study Visit ID`,
-           "Reason_For_Collection" = `Visits::Reason_For_Collection`,
+    rename("Patient_ID" = `KBase_Patient_ID`,
+           "Study_Visit_ID" = `Study Visit ID`,
+           "Reason_For_Collection" = `Reason_For_Collection`,
            "SampleName" = `QC Link SampleName`) %>%
     select(Patient_ID, Study_Visit_ID, Reason_For_Collection, SampleName) %>% 
     separate(SampleName, sep = "_", into = c("Study", "Patient", "Visit", "Source", "Fraction", "Drop_Tumor_Increment", "Drop_Tumor_Assay", "Drop_Library")) %>% 
@@ -210,9 +210,12 @@ gene_exp <- gene_exp %>%
 ###############################################
 
 # Join data tables
-gene_table <- inner_join(gene_mut, gene_cn, by = "Tumor_Specimen")
-gene_table <- inner_join(gene_table, gene_exp, by = "Tumor_Specimen")
-gene_table <- inner_join(gene_table, qc_data, by = "Tumor_Specimen")
+gene_table <- full_join(gene_mut, gene_cn, by = "Tumor_Specimen")
+gene_table <- full_join(gene_table, gene_exp, by = "Tumor_Specimen")
+gene_table <- left_join(gene_table, qc_data, by = "Tumor_Specimen")
+
+# Save data table
+write_tsv(gene_table, paste(hgnc_id, ensg_id, "all_data.tsv", sep = "_"))
 
 # Filter table
 if (opt$subset == "All") {
@@ -225,22 +228,19 @@ if (opt$subset == "All") {
   gene_table <- gene_table %>% filter(Reason_For_Collection != "Baseline")
 }
 
-# Save data table
-write_tsv(gene_table, paste(plot_prefix, "data.tsv", sep = "_"))
-
 # Sort joined table by mutation count
 gene_table <- gene_table %>% arrange(Mutation_Count)
 
 # Summarize table
 gene_summary <- gene_table %>% 
-  summarise(exp_mean = mean(Expression_TPM), 
-            exp_median = median(Expression_TPM), 
-            exp_min = min(Expression_TPM), 
-            exp_max = max(Expression_TPM), 
-            cn_mean = mean(Copy_Number_log2), 
-            cn_median = median(Copy_Number_log2), 
-            cn_min = min(Copy_Number_log2), 
-            cn_max = max(Copy_Number_log2))
+  summarise(exp_mean = mean(Expression_TPM, na.rm=TRUE),
+            exp_median = median(Expression_TPM, na.rm=TRUE),
+            exp_min = min(Expression_TPM, na.rm=TRUE),
+            exp_max = max(Expression_TPM, na.rm=TRUE),
+            cn_mean = mean(Copy_Number_log2, na.rm=TRUE),
+            cn_median = median(Copy_Number_log2, na.rm=TRUE),
+            cn_min = min(Copy_Number_log2, na.rm=TRUE),
+            cn_max = max(Copy_Number_log2, na.rm=TRUE))
 
 # Capture the max expression value
 maxEXPR <- gene_summary %>% pull(var = exp_max)
@@ -283,7 +283,8 @@ ggplot(gene_exp, aes(log2(Expression_TPM+1))) +
   annotate("text", x = 1.3, y = 30, label = "On", size = rel(2.5)) +
   annotate("text", x = 0.7, y = 30, label = "Off", size = rel(2.5)) +
   scale_x_continuous(limits=c(0, log2(maxEXPR + 1)), 
-                     name = "Estimated Gene Expression Level [Log2(TPM+1)]") + 
+                     name = "Estimated Gene Expression Level [Log2(TPM+1)]") +
+  scale_y_continuous(name = "Count") +
   ggtitle(label = plot_prefix) + 
   theme(plot.title = element_text(hjust = 0.5, size = 14), 
         axis.text = element_text(size=8, colour="black"), 
@@ -337,6 +338,9 @@ ggsave(paste(plot_prefix, "copyNumber_histogram.png", sep = "_"),
 ###############################################
 ## Plot the Three-way relationship
 ###############################################
+
+# Remove rows with NA in the mutation column
+gene_table <- gene_table %>% filter(Mutation_Count >= 0)
 
 # Generate Custom Image depending on Copy Number Representation Requested
 if ( opt$copyNumber_format == "Integer") {
