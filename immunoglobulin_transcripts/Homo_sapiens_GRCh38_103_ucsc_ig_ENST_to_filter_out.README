@@ -1,0 +1,176 @@
+#!/bin/bash
+
+# This script is designed to create the transcript list used to filter out of the the salmon tpm files and recalculate the tpms.
+
+module load BEDTools/2.26.0
+
+cp /home/tgenref/homo_sapiens/grch38_hg38/hg38_tempe/gene_model/ensembl_v103/Homo_sapiens.GRCh38.103.ucsc.gtf .
+
+# Make a flat file of the gtf
+# chr start stop ENSG HUGO gene_biotype transcript_id transcript_biotype
+
+awk -F '[\t;" ]' '$0 ~ /transcript_id/ { OFS = "\t" ; 
+	chr=$1
+	start=$4
+	stop=$5
+	gene=$11
+	tran=""
+	bio_type=""
+	gene_name=""
+	transcript_biotype=""
+	for (i = 1; i<= NF; i++) {
+		if ($i == "transcript_id") {
+            tran=i + 2 ;
+        }
+		if ($i == "gene_biotype") { 
+			bio_type=i + 2 ; 
+		}
+		if ($i == "gene_name") {
+            gene_name=i + 2 ; 
+        }
+		if ($i == "transcript_biotype") {
+            transcript_biotype=i + 2 ;
+        }
+	}
+	print chr, start, stop, gene, $gene_name, $bio_type, $tran, $transcript_biotype 
+}' Homo_sapiens.GRCh38.103.ucsc.gtf > Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv
+
+#
+#
+# Collect all chrM transcript_id's
+awk -F'\t' '$1 == "chrM" { print $7 }' Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv | sort | uniq > ENST_to_filter_out.txt
+wc -l ENST_to_filter_out.txt
+# 37 ENST_to_filter_out.txt
+
+#
+#
+# Collect all chrY transcript_id's
+awk -F'\t' '$1 == "chrY" { print $7 }' Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv | sort | uniq >> ENST_to_filter_out.txt
+wc -l ENST_to_filter_out.txt
+# 856 ENST_to_filter_out.txt
+# 819 added
+
+#
+#
+# Collect all rRNA and rRNA_pseudogene transcript_id's
+awk -F'\t' '$6 == "rRNA" { print $7 } ; $6 == "rRNA_pseudogene" { print $7}' Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv | sort | uniq >> ENST_to_filter_out.txt
+wc -l ENST_to_filter_out.txt
+# 1405 ENST_to_filter_out.txt 
+# 549 added
+
+sort ENST_to_filter_out.txt | uniq | wc -l
+# 1398
+# 7 duplicates
+
+sort ENST_to_filter_out.txt | uniq > temp
+mv temp ENST_to_filter_out.txt
+
+#
+#
+# Collect all IG_* transcript_id's using regions and gene_biotype
+
+awk -F'\t' '$6 == "IG_C_gene" { print $7 } ; 
+	$6 == "IG_C_pseudogene" { print $7} ;
+	$6 == "IG_D_gene" { print $7} ;
+	$6 == "IG_J_gene" { print $7} ;
+	$6 == "IG_J_pseudogene" { print $7} ;
+	$6 == "IG_pseudogene" { print $7} ;
+	$6 == "IG_V_gene" { print $7} ;
+	$6 == "IG_V_pseudogene" { print $7}' Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv | sort | uniq >> ENST_to_filter_out.txt
+
+wc -l ENST_to_filter_out.txt
+# 1831 ENST_to_filter_out.txt
+
+sort ENST_to_filter_out.txt | uniq | wc -l
+# 1831
+# 433 added
+
+echo -e chr2"\t"88857160"\t"90367699"\t"IGK > ig_loci.bed
+echo -e chr14"\t"105583730"\t"1068710312"\t"IGH >> ig_loci.bed
+echo -e chr16"\t"31952159"\t"32084785"\t"IGH >> ig_loci.bed
+echo -e chr16"\t"33802763"\t"33950420"\t"IGH >> ig_loci.bed
+echo -e chr22"\t"21991098"\t"22923034"\t"IGL >> ig_loci.bed
+
+bedtools intersect -a Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv -b ig_loci.bed > Homo_sapiens.GRCh38.103.ucsc.transcript_id_ig_regions.bed
+
+cut -f7 Homo_sapiens.GRCh38.103.ucsc.transcript_id_ig_regions.bed | sort | uniq >> ENST_to_filter_out.txt
+
+wc -l ENST_to_filter_out.txt
+# 2347 ENST_to_filter_out.txt
+# 516 added
+
+sort ENST_to_filter_out.txt | uniq | wc -l
+# 1974
+# 373 duplicates
+
+sort ENST_to_filter_out.txt | uniq > temp
+mv temp ENST_to_filter_out.txt
+
+#
+#
+# Collect all transcript_id's for JCHAIN ENSG00000132465 
+grep ENSG00000132465 Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv | cut -f7 | sort | uniq >> ENST_to_filter_out.txt
+
+wc -l ENST_to_filter_out.txt
+# 1979 ENST_to_filter_out.txt
+# 5 added
+
+#
+#
+# Collect all transcript_id's for HBB ENSG00000244734
+grep ENSG00000244734 Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv | cut -f7 | sort | uniq >> ENST_to_filter_out.txt
+
+wc -l ENST_to_filter_out.txt
+# 1985 ENST_to_filter_out.txt
+# 6 added
+
+#
+#
+# Collect all transcript_id's for non annotated ig genes
+
+# AC233755.1 ENSG00000275063
+# AC136616.2 ENSG00000277761
+# AC141272.1 ENSG00000277836
+# AC233755.2 ENSG00000277856
+# AC007908.1 ENSG00000278510
+# AC103563.1 ENSG00000224585
+# AC103563.3 ENSG00000231331
+grep -e 'ENSG00000275063\|ENSG00000277761\|ENSG00000277836\|ENSG00000277856\|ENSG00000278510\|ENSG00000224585\|ENSG00000231331' Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv | cut -f7 | sort | uniq >> ENST_to_filter_out.txt
+
+wc -l ENST_to_filter_out.txt
+# 1993 ENST_to_filter_out.txt
+# 8 added
+
+
+#
+#
+# create ensg to enst map
+
+mv ENST_to_filter_out.txt Homo_sapiens_GRCh38_103_ucsc_ig_ENST_to_filter_out.tsv
+
+awk -F'\t' 'FNR==NR {a[$1]=$1; next} 
+	($7 in a) { OFS = "\t" ; print $4, $7}' Homo_sapiens_GRCh38_103_ucsc_ig_ENST_to_filter_out.tsv Homo_sapiens.GRCh38.103.ucsc.transcript_id.tsv | \
+	sort | \
+	uniq > Homo_sapiens_GRCh38_103_ucsc_ig_filter_ENSG_to_ENST_map.txt
+
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
